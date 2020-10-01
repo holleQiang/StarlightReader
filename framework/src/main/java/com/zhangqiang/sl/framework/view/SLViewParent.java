@@ -7,4 +7,6 @@ public interface SLViewParent {
     void invalidateChild(SLView child);
 
     SLViewParent invalidateChildInParent();
+
+    boolean isLayoutRequested();
 }

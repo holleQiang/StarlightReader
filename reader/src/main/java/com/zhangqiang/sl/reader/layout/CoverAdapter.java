@@ -53,7 +53,6 @@ public class CoverAdapter extends Adapter {
                     return null;
                 }
                 TextWordPosition position = TextWordPosition.previous(book, startPosition);
-                mPosition.set(position);
                 pageView.setBook(book, position, true);
             } else if (intent == CoverLayout.INTENT_NEXT) {
 
@@ -62,7 +61,6 @@ public class CoverAdapter extends Adapter {
                     return null;
                 }
                 TextWordPosition position = TextWordPosition.next(book, endPosition);
-                mPosition.set(position);
                 pageView.setBook(book, position, false);
             }
             pageView.setAdapter(mPageAdapter);

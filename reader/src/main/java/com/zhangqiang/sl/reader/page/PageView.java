@@ -25,7 +25,7 @@ public class PageView extends SLViewGroup {
     private RecycleBin mRecycleBin;
     private final List<LineInfo> mLineInfoList = new ArrayList<>();
     private Adapter mAdapter = new DefaultAdapter();
-    private int mParagraphSpace;
+    private int mParagraphSpace = 50;
 
     public PageView(SLContext context) {
         super(context);
@@ -48,7 +48,7 @@ public class PageView extends SLViewGroup {
         mLineInfoList.clear();
         mRecycleBin.addChildrenToScrapViews(this);
 
-        if (mBook == null || mPosition == null || !mPosition.isValid() || mAdapter == null) {
+        if (mBook == null || mPosition == null || mAdapter == null) {
             return;
         }
         long currentTimeMillis = System.currentTimeMillis();
@@ -71,12 +71,14 @@ public class PageView extends SLViewGroup {
         final int maxWidth = getWidth();
         final int maxHeight = getHeight();
         int currentHeight = 0;
-
+        int lastParagraphIndex = -1;
+        int paragraphCount = 0;
         int startParagraphIndex = mEndPosition.getParagraphIndex();
         for (int currentParagraphIndex = startParagraphIndex; currentParagraphIndex >= 0; currentParagraphIndex--) {
 
             Paragraph paragraph = mBook.getParagraph(currentParagraphIndex);
-            int endElementIndex = currentParagraphIndex == startParagraphIndex ? mEndPosition.getElementIndex() : paragraph.getElementCount() - 1;
+            int elementCount = paragraph.getElementCount();
+            int endElementIndex = currentParagraphIndex == startParagraphIndex ? mEndPosition.getElementIndex() : elementCount - 1;
             ParagraphInfo paragraphInfo = makeParagraphLine(mBook,
                     currentParagraphIndex,
                     0,
@@ -88,9 +90,16 @@ public class PageView extends SLViewGroup {
             for (int pLineIndex = pLineInfoList.size() - 1; pLineIndex >= 0; pLineIndex--) {
                 LineInfo pLineInfo = pLineInfoList.get(pLineIndex);
                 int lineHeight = pLineInfo.lineHeight;
-                if (currentHeight + lineHeight < maxHeight) {
+                if (currentHeight + lineHeight <= maxHeight) {
                     mLineInfoList.add(0, pLineInfo);
                     currentHeight += lineHeight;
+                    if (pLineInfo.startPosition.getElementIndex() == 0) {
+                        currentHeight += mParagraphSpace;
+                    }
+                    if (currentParagraphIndex != lastParagraphIndex) {
+                        paragraphCount++;
+                        lastParagraphIndex = currentParagraphIndex;
+                    }
                 } else {
                     outOfRange = true;
                     mRecycleBin.addScrapView(pLineInfo);
@@ -102,10 +111,14 @@ public class PageView extends SLViewGroup {
                 break;
             }
         }
-        layoutLineInfo(mLineInfoList);
         if (!mLineInfoList.isEmpty()) {
-            mStartPosition.set(mLineInfoList.get(0).startPosition);
+            TextWordPosition startPosition = mLineInfoList.get(0).startPosition;
+            if (TextWordPosition.isStartOfParagraph(mBook, startPosition)) {
+                currentHeight -= mParagraphSpace;
+            }
+            mStartPosition.set(startPosition);
         }
+        layoutLineInfo(mLineInfoList, currentHeight, paragraphCount);
     }
 
     private void layoutChildFromStart() {
@@ -114,6 +127,8 @@ public class PageView extends SLViewGroup {
         final int maxWidth = getWidth();
         final int maxHeight = getHeight();
         int currentHeight = 0;
+        int lastParagraphIndex = -1;
+        int paragraphCount = 0;
         int startParagraphIndex = mStartPosition.getParagraphIndex();
         int endParagraphIndex = mBook.getParagraphCount() - 1;
         for (int currentParagraphIndex = startParagraphIndex; currentParagraphIndex <= endParagraphIndex; currentParagraphIndex++) {
@@ -121,10 +136,11 @@ public class PageView extends SLViewGroup {
             long currentTimeMillis = System.currentTimeMillis();
             Paragraph paragraph = mBook.getParagraph(currentParagraphIndex);
             int startElementIndex = currentParagraphIndex == startParagraphIndex ? mStartPosition.getElementIndex() : 0;
+            int elementCount = paragraph.getElementCount();
             ParagraphInfo paragraphInfo = makeParagraphLine(mBook,
                     currentParagraphIndex,
                     startElementIndex,
-                    paragraph.getElementCount() - 1,
+                    elementCount - 1,
                     maxWidth,
                     maxHeight - currentHeight);
             List<LineInfo> pLineInfoList = paragraphInfo.lineInfoList;
@@ -136,9 +152,16 @@ public class PageView extends SLViewGroup {
             for (int pLineIndex = 0; pLineIndex < pLineSize; pLineIndex++) {
                 LineInfo pLineInfo = pLineInfoList.get(pLineIndex);
                 int lineHeight = pLineInfo.lineHeight;
-                if (currentHeight + lineHeight < maxHeight) {
+                if (currentHeight + lineHeight <= maxHeight) {
                     mLineInfoList.add(pLineInfo);
                     currentHeight += lineHeight;
+                    if (pLineInfo.endPosition.getElementIndex() == elementCount - 1) {
+                        currentHeight += mParagraphSpace;
+                    }
+                    if (currentParagraphIndex != lastParagraphIndex) {
+                        paragraphCount++;
+                        lastParagraphIndex = currentParagraphIndex;
+                    }
                 } else {
                     outOfRange = true;
                     mRecycleBin.addScrapView(pLineInfo);
@@ -150,23 +173,29 @@ public class PageView extends SLViewGroup {
                 break;
             }
             if (debug) {
-                SLContext.getLogger().logI(TAG,"======handleParagraph=====cost====" + (System.currentTimeMillis() - currentTimeMillis));
+                SLContext.getLogger().logI(TAG, "======handleParagraph=====cost====" + (System.currentTimeMillis() - currentTimeMillis));
             }
         }
 
-        layoutLineInfo(mLineInfoList);
         if (!mLineInfoList.isEmpty()) {
             LineInfo lastLineInfo = mLineInfoList.get(mLineInfoList.size() - 1);
-            mEndPosition.set(lastLineInfo.endPosition);
+            TextWordPosition endPosition = lastLineInfo.endPosition;
+            if (TextWordPosition.isEndOfParagraph(mBook, endPosition)) {
+                currentHeight -= mParagraphSpace;
+            }
+            mEndPosition.set(endPosition);
         }
+        layoutLineInfo(mLineInfoList, currentHeight, paragraphCount);
     }
 
-    private void layoutLineInfo(List<LineInfo> lineInfoList) {
+    private void layoutLineInfo(List<LineInfo> lineInfoList, int totalHeight, int paragraphCount) {
         long currentTimeMillis = System.currentTimeMillis();
         int l = 0;
         int t = 0;
         int r;
         int b;
+
+        int fixParagraphSpace = (paragraphCount > 1 ? (getHeight() - totalHeight) / (paragraphCount - 1) : 0) + mParagraphSpace;
         for (LineInfo info : lineInfoList) {
             List<SLView> lineViews = info.lineViews;
 
@@ -179,9 +208,15 @@ public class PageView extends SLViewGroup {
             }
             l = 0;
             t += info.lineHeight;
+            if (info.endPosition.getParagraphIndex() == -1) {
+                SLContext.getLogger().logI(TAG, "======parag=====cost====");
+            }
+            if (TextWordPosition.isEndOfParagraph(mBook, info.endPosition)) {
+                t += fixParagraphSpace;
+            }
         }
         if (debug) {
-            SLContext.getLogger().logI(TAG,"====layoutLineInfo cost======" + (System.currentTimeMillis()  - currentTimeMillis));
+            SLContext.getLogger().logI(TAG, "====layoutLineInfo cost======" + (System.currentTimeMillis() - currentTimeMillis));
         }
     }
 
@@ -192,7 +227,7 @@ public class PageView extends SLViewGroup {
         requestLayout();
     }
 
-    public void setAdapter(Adapter adapter){
+    public void setAdapter(Adapter adapter) {
         if (mAdapter != null) {
             mAdapter.unRegisterAdapterObserver(mObserver);
             mAdapter = null;
@@ -223,8 +258,9 @@ public class PageView extends SLViewGroup {
 
         SLView view = mAdapter.getView(this, element, itemViewType, scrapView);
         if (scrapView != null && scrapView != view) {
-            mRecycleBin.addScrapView(itemViewType,scrapView);
+            mRecycleBin.addScrapView(itemViewType, scrapView);
         }
+        view.forceLayout();
         LayoutParams layoutParams = ((LayoutParams) view.getLayoutParams());
         if (layoutParams == null) {
             layoutParams = generateDefaultLayoutParams();
@@ -254,11 +290,13 @@ public class PageView extends SLViewGroup {
 
     public static class LayoutParams extends SLViewGroup.LayoutParams {
         private int viewType = -1;
-        private void checkViewType(){
+
+        private void checkViewType() {
             if (viewType == -1) {
                 throw new IllegalArgumentException("illegal view type");
             }
         }
+
         public LayoutParams(int width, int height) {
             super(width, height);
         }
@@ -386,12 +424,10 @@ public class PageView extends SLViewGroup {
 
             if (currentLineInfo == null) {
                 currentLineInfo = LineInfo.obtain();
-                currentLineInfo.startPosition.setParagraphIndex(paragraphIndex);
-                currentLineInfo.startPosition.setElementIndex(currentElementIndex);
+                currentLineInfo.startPosition.set(paragraphIndex,currentElementIndex);
             }
             currentLineInfo.addLineView(child);
-            currentLineInfo.endPosition.setParagraphIndex(paragraphIndex);
-            currentLineInfo.endPosition.setElementIndex(currentElementIndex);
+            currentLineInfo.endPosition.set(paragraphIndex,currentElementIndex);
 
             if (debug) {
 //                SLContext.getLogger().logI(TAG, paragraphIndex + "=======add element=====" + ((TextElement) element).getText());
@@ -404,6 +440,7 @@ public class PageView extends SLViewGroup {
 
             if (currentElementIndex == endElementIndex) {
                 paragraphInfo.addLineInfo(currentLineInfo);
+                currentLineInfo = null;
             }
         }
         if (debug) {
@@ -414,7 +451,7 @@ public class PageView extends SLViewGroup {
 
     public static class RecycleBin {
 
-        private HashMap<Integer,ViewNode> mScrapViewsMap = new HashMap<>();
+        private HashMap<Integer, ViewNode> mScrapViewsMap = new HashMap<>();
         private int mScrapViewCount;
 
         public SLView getScrapView(int viewType) {
@@ -423,7 +460,7 @@ public class PageView extends SLViewGroup {
             if (node != null) {
                 mScrapViewCount--;
                 mScrapViews = node.next;
-                mScrapViewsMap.put(viewType,mScrapViews);
+                mScrapViewsMap.put(viewType, mScrapViews);
                 SLView view = node.view;
                 node.recycle();
                 return view;
@@ -431,7 +468,7 @@ public class PageView extends SLViewGroup {
             return null;
         }
 
-        void addScrapView(int viewType,SLView view) {
+        void addScrapView(int viewType, SLView view) {
             if (view == null) {
                 throw new NullPointerException();
             }
@@ -441,16 +478,16 @@ public class PageView extends SLViewGroup {
             node.view = view;
             node.next = mScrapViews;
             mScrapViews = node;
-            mScrapViewsMap.put(viewType,mScrapViews);
+            mScrapViewsMap.put(viewType, mScrapViews);
             mScrapViewCount++;
         }
 
-        void addScrapView(LineInfo lineInfo){
+        void addScrapView(LineInfo lineInfo) {
             for (int i = 0; i < lineInfo.lineViews.size(); i++) {
                 SLView view = lineInfo.lineViews.get(i);
                 LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
                 int viewType = layoutParams.viewType;
-                addScrapView(viewType,view);
+                addScrapView(viewType, view);
             }
         }
 
@@ -459,7 +496,7 @@ public class PageView extends SLViewGroup {
                 SLView child = viewGroup.getChildAt(i);
                 viewGroup.removeViewInLayout(child);
                 LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
-                addScrapView(layoutParams.viewType,child);
+                addScrapView(layoutParams.viewType, child);
             }
         }
 

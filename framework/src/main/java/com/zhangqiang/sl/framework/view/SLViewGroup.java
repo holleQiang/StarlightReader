@@ -187,12 +187,22 @@ public abstract class SLViewGroup extends SLView implements SLViewParent {
     @Override
     public void invalidateChild(SLView child) {
 
-        int flag = child.isOpaque() ? P_FLAG_DIRTY_OPAQUE : P_FLAG_DIRTY;
-        mPrivateFlags = mPrivateFlags & ~P_FLAG_DIRTY_MASK | flag;
+        int dirtyFlag = child.isOpaque() ? P_FLAG_DIRTY_OPAQUE : P_FLAG_DIRTY;
 
         SLViewParent tempParent = this;
         do {
 
+            SLView view = null;
+            if (tempParent instanceof SLView) {
+                view = (SLView) tempParent;
+            }
+            if (view != null) {
+                if ((view.mPrivateFlags & P_FLAG_DIRTY_MASK) != P_FLAG_DIRTY) {
+                    //如果父view没有请求重绘的话
+                    //如果子view不透明，则给父view都设上脏区不透明的标志，遍历时只绘制子view
+                    view.mPrivateFlags = view.mPrivateFlags & ~P_FLAG_DIRTY_MASK | dirtyFlag;
+                }
+            }
             tempParent = tempParent.invalidateChildInParent();
         } while (tempParent != null);
     }
@@ -367,4 +377,8 @@ public abstract class SLViewGroup extends SLView implements SLViewParent {
     }
 
 
+    @Override
+    public boolean isLayoutRequested() {
+        return (mPrivateFlags & P_FLAG_FORCE_LAYOUT) == P_FLAG_FORCE_LAYOUT;
+    }
 }

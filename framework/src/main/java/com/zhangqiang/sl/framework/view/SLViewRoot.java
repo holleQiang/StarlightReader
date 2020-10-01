@@ -121,6 +121,11 @@ public class SLViewRoot implements SLViewParent {
         return null;
     }
 
+    @Override
+    public boolean isLayoutRequested() {
+        return mLayoutRequested;
+    }
+
     private void doTraversalMeasure() {
         if (debug) {
             logI("doTraversalMeasure");
@@ -202,8 +207,8 @@ public class SLViewRoot implements SLViewParent {
         }
     }
 
-    public boolean dispatchTouchEvent(SLMotionEvent motionEvent) {
-        return mRootView.dispatchTouchEvent(motionEvent);
+    public void dispatchTouchEvent(SLMotionEvent motionEvent) {
+        mRootView.dispatchTouchEvent(motionEvent);
     }
 
     public SLView getRootView() {

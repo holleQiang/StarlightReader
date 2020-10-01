@@ -74,11 +74,8 @@ public class CoverLayout extends SLViewGroup {
 
         detachAllViewsFromParent();
 
-        SLView prevView = null;
-        do {
+        makeAndAddView(null, INTENT_NEXT);
 
-            prevView = makeAndAddView(prevView, INTENT_NEXT);
-        } while (prevView != null && prevView.getLeft() != 0);
         mRecycleBin.removeActiveViews();
     }
 
@@ -168,11 +165,6 @@ public class CoverLayout extends SLViewGroup {
         int currX = (int) event.getX();
         int currY = (int) event.getY();
         switch (event.getAction()) {
-            case SLMotionEvent.ACTION_DOWN:
-                if (currX > getWidth() / 3 && currX < getWidth() / 3 * 2) {
-                    return false;
-                }
-                break;
             case SLMotionEvent.ACTION_MOVE:
 
                 processDragIdentify(currX, currY);
@@ -190,7 +182,6 @@ public class CoverLayout extends SLViewGroup {
                 }
                 break;
             case SLMotionEvent.ACTION_UP:
-            case SLMotionEvent.ACTION_CANCEL:
                 if (!beingDragged) {
                     if (currX > getWidth() / 3 * 2) {
                         //click right
@@ -208,36 +199,53 @@ public class CoverLayout extends SLViewGroup {
                                 notifyPageChanged();
                             }
                         }
+                    }else {
+                        notifyPageClicked();
                     }
                 } else {
-                    beingDragged = false;
-                    if (mDragDirection == DRAG_DIRECTION_LTR) {
-                        if (mDragIntent == INTENT_PREVIOUS) {
-                            if (mTouchView != null) {
-                                smoothScrollToRight(mTouchView);
-                                notifyPageChanged();
-                            }
-                        } else {
-                            if (mTouchView != null) {
-                                smoothScrollToOrigin(mTouchView);
-                            }
-                        }
-                    } else if (mDragDirection == DRAG_DIRECTION_RTL) {
-                        if (mDragIntent == INTENT_NEXT) {
-                            if (mTouchView != null) {
-                                smoothScrollToLeft(mTouchView);
-                                notifyPageChanged();
-                            }
-                        } else {
-                            if (mTouchView != null) {
-                                smoothScrollToOrigin(mTouchView);
-                            }
-                        }
-                    }
+                    handleBeingDraggedWhenTouchEnd();
+                }
+                break;
+            case SLMotionEvent.ACTION_CANCEL:
+                if (beingDragged) {
+                    handleBeingDraggedWhenTouchEnd();
                 }
                 break;
         }
         return true;
+    }
+
+    private void handleBeingDraggedWhenTouchEnd() {
+        beingDragged = false;
+        if (mDragDirection == DRAG_DIRECTION_LTR) {
+            if (mDragIntent == INTENT_PREVIOUS) {
+                if (mTouchView != null) {
+                    smoothScrollToRight(mTouchView);
+                    notifyPageChanged();
+                }
+            } else {
+                if (mTouchView != null) {
+                    smoothScrollToOrigin(mTouchView);
+                }
+            }
+        } else if (mDragDirection == DRAG_DIRECTION_RTL) {
+            if (mDragIntent == INTENT_NEXT) {
+                if (mTouchView != null) {
+                    smoothScrollToLeft(mTouchView);
+                    notifyPageChanged();
+                }
+            } else {
+                if (mTouchView != null) {
+                    smoothScrollToOrigin(mTouchView);
+                }
+            }
+        }
+    }
+
+    private void notifyPageClicked() {
+        if (onPageChangeListener != null) {
+            onPageChangeListener.onPageCenterClick(getChildAt(0));
+        }
     }
 
     private void notifyPageChanged() {
@@ -328,6 +336,7 @@ public class CoverLayout extends SLViewGroup {
             int childCount = viewGroup.getChildCount();
             for (int i = 0; i < childCount; i++) {
                 SLView child = viewGroup.getChildAt(i);
+                child.forceLayout();
                 ViewNode node = ViewNode.obtain();
                 node.view = child;
                 node.next = mActiveView;
@@ -507,6 +516,8 @@ public class CoverLayout extends SLViewGroup {
     public interface OnPageChangeListener{
 
         void onPageChange(SLView view);
+
+        void onPageCenterClick(SLView view);
     }
 
     public void setOnPageChangeListener(OnPageChangeListener onPageChangeListener) {

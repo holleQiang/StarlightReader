@@ -85,11 +85,15 @@ public class AndroidSLView2 extends View implements ISLView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        mViewRoot.scheduleTraversal();
         ((ViewRenderBuffer) mViewRoot.getRenderBuffer()).setCanvas(canvas);
-        for (int i = mRunnableList.size() - 1; i >= 0; i--) {
-            mRunnableList.get(i).run();
-            mRunnableList.remove(i);
+        int size = mRunnableList.size();
+        if (size > 0) {
+            for (int i = size - 1; i >= 0; i--) {
+                mRunnableList.get(i).run();
+                mRunnableList.remove(i);
+            }
+        }else {
+            mViewRoot.scheduleTraversal();
         }
     }
 
@@ -113,11 +117,8 @@ public class AndroidSLView2 extends View implements ISLView {
         } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
             motionEvent.setAction(SLMotionEvent.ACTION_CANCEL);
         }
-        boolean handed = mViewRoot.dispatchTouchEvent(motionEvent);
+        mViewRoot.dispatchTouchEvent(motionEvent);
         motionEvent.recycle();
-        if (!handed) {
-            super.onTouchEvent(event);
-        }
         return true;
     }
 

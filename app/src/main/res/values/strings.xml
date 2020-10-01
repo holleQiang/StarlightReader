@@ -12,4 +12,6 @@
     <string name="txt_charset">文本编码</string>
     <string name="charset_utf_8">UTF-8</string>
     <string name="charset_gbk">GBK</string>
+    <string name="chapter_list">章节列表</string>
+    <string name="chapter_list_number">章节列表（共%d章）</string>
 </resources>

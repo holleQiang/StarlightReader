@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ReadRecordModel {
 
-    public static void updateReadPosition(String bookName, String bookPath, TextWordPosition position) {
+    public static void updateReadPosition(String bookPath, TextWordPosition position) {
         Dao<ReadRecordEntity> dao = AppDBHelper.getInstance().getDao(ReadRecordEntity.class);
         List<ReadRecordEntity> entities = dao.query(null, "bookPath=?", new String[]{bookPath}, null, null, null, null);
         ReadRecordEntity recordEntity;
@@ -17,7 +17,6 @@ public class ReadRecordModel {
             recordEntity = entities.get(0);
         } else {
             recordEntity = new ReadRecordEntity();
-            recordEntity.setBookName(bookName);
             recordEntity.setBookPath(bookPath);
         }
         recordEntity.setParagraphIndex(position.getParagraphIndex());
@@ -33,8 +32,7 @@ public class ReadRecordModel {
         if (entities != null && !entities.isEmpty()) {
             ReadRecordEntity entity = entities.get(0);
             TextWordPosition position = new TextWordPosition();
-            position.setParagraphIndex(entity.getParagraphIndex());
-            position.setElementIndex(entity.getElementIndex());
+            position.set(entity.getParagraphIndex(), entity.getElementIndex());
             return position;
         }
         return new TextWordPosition(0, 0);

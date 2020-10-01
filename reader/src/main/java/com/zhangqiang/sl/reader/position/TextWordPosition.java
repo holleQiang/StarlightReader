@@ -6,46 +6,34 @@ import com.zhangqiang.sl.reader.parser.Paragraph;
 
 public class TextWordPosition {
 
-    private int paragraphIndex;
-    private int elementIndex;
+    private long position;
 
 
     public TextWordPosition() {
     }
 
     public TextWordPosition(int paragraphIndex, int elementIndex) {
-        this.paragraphIndex = paragraphIndex;
-        this.elementIndex = elementIndex;
+        position = (long) paragraphIndex << 32 & elementIndex;
     }
 
     public int getParagraphIndex() {
-        return paragraphIndex;
+        return (int) (position >> 32);
     }
 
     public void set(TextWordPosition position) {
-        this.paragraphIndex = position.paragraphIndex;
-        this.elementIndex = position.elementIndex;
+        this.position = position.position;
     }
 
-    public void setParagraphIndex(int paragraphIndex) {
-        this.paragraphIndex = paragraphIndex;
+    public void set(int paragraphIndex, int elementIndex) {
+        position = (long) paragraphIndex << 32 | elementIndex;
     }
 
     public int getElementIndex() {
-        return elementIndex;
-    }
-
-    public void setElementIndex(int elementIndex) {
-        this.elementIndex = elementIndex;
+        return (int) position;
     }
 
     public void reset() {
-        paragraphIndex = -1;
-        elementIndex = -1;
-    }
-
-    public boolean isValid() {
-        return paragraphIndex >= 0 && elementIndex >= 0;
+        position = 0;
     }
 
     public static boolean isEndOfBook(Book book, TextWordPosition position) {
@@ -64,7 +52,7 @@ public class TextWordPosition {
 
         if (isEndOfBook(book, curr)) {
             next.set(curr);
-        }else {
+        } else {
 
             int targetParagraphIndex;
             int targetElementIndex;
@@ -79,8 +67,7 @@ public class TextWordPosition {
                 targetParagraphIndex = paragraphIndex;
                 targetElementIndex = elementIndex + 1;
             }
-            next.setParagraphIndex(targetParagraphIndex);
-            next.setElementIndex(targetElementIndex);
+            next.set(targetParagraphIndex, targetElementIndex);
         }
         return next;
     }
@@ -89,7 +76,7 @@ public class TextWordPosition {
         TextWordPosition next = new TextWordPosition();
         if (isStartOfBook(book, curr)) {
             next.set(curr);
-        }else {
+        } else {
             int targetParagraphIndex;
             int targetElementIndex;
             int paragraphIndex = curr.getParagraphIndex();
@@ -101,8 +88,7 @@ public class TextWordPosition {
                 targetParagraphIndex = paragraphIndex;
                 targetElementIndex = elementIndex - 1;
             }
-            next.setParagraphIndex(targetParagraphIndex);
-            next.setElementIndex(targetElementIndex);
+            next.set(targetParagraphIndex, targetElementIndex);
         }
         return next;
     }
@@ -118,8 +104,10 @@ public class TextWordPosition {
     @Override
     public String toString() {
         return "TextWordPosition{" +
-                "paragraphIndex=" + paragraphIndex +
-                ", elementIndex=" + elementIndex +
+                "paragraphIndex=" + getParagraphIndex() +
+                ", elementIndex=" + getElementIndex() +
                 '}';
     }
+
+
 }

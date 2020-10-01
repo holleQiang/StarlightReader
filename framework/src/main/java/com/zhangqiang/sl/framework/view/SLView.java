@@ -265,10 +265,9 @@ public class SLView {
         }
         mPrivateFlags |= P_FLAG_FORCE_LAYOUT;
         SLViewParent parent = getParent();
-        if (parent == null) {
-            return;
+        if (parent != null && !parent.isLayoutRequested()) {
+            parent.requestLayout();
         }
-        parent.requestLayout();
     }
 
     public SLContext getContext() {
