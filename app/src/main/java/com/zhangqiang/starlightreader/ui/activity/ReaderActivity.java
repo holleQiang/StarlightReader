@@ -20,8 +20,8 @@ import com.zhangqiang.sl.reader.layout.CoverLayout;
 import com.zhangqiang.sl.reader.layout.CoverAdapter;
 import com.zhangqiang.sl.reader.page.PageView;
 import com.zhangqiang.sl.reader.parser.Book;
-import com.zhangqiang.sl.reader.parser.impl.Chapter;
-import com.zhangqiang.sl.reader.parser.impl.TxtBook;
+import com.zhangqiang.sl.reader.parser.impl.txt.Chapter;
+import com.zhangqiang.sl.reader.parser.impl.txt.TxtBook;
 import com.zhangqiang.sl.reader.position.TextWordPosition;
 import com.zhangqiang.starlightreader.R;
 import com.zhangqiang.starlightreader.base.ui.BaseActivity;
@@ -88,6 +88,7 @@ public class ReaderActivity extends BaseActivity {
                 dialog.show(getSupportFragmentManager(), "reader_settings");
             }
         });
+
     }
 
     private void loadBook(String charset) {
@@ -126,9 +127,16 @@ public class ReaderActivity extends BaseActivity {
 
     private void setupBook(Book book, TextWordPosition readPosition) {
         mAdapter = new CoverAdapter(book, readPosition);
+        mAdapter.setTextColor(ReadSettingsModel.getTxtColor());
+        mAdapter.setTextSize(ViewUtils.spToPx(ReaderActivity.this, ReadSettingsModel.getTxtSize()));
+        int hPadding = ViewUtils.dpToPx(this,16);
+        int vPadding = ViewUtils.dpToPx(this,10);
+        mAdapter.setContentPadding(hPadding,0,hPadding,vPadding);
+        mAdapter.setTopBarPadding(hPadding,vPadding,hPadding,vPadding);
+        mAdapter.setTopBarTextColor(0xff666666);
+        mAdapter.setParagraphSpace(ViewUtils.dpToPx(this,5));
+        mAdapter.setTopBarTextSize(ViewUtils.spToPx(this,15));
         mCoverLayout.setAdapter(mAdapter);
-        mAdapter.getPageAdapter().setTextColor(ReadSettingsModel.getTxtColor());
-        mAdapter.getPageAdapter().setTextSize(ViewUtils.spToPx(ReaderActivity.this, ReadSettingsModel.getTxtSize()));
     }
 
     private void initSettings() {
@@ -150,7 +158,7 @@ public class ReaderActivity extends BaseActivity {
                     @Override
                     public void onNext(Integer integer) {
                         if (mAdapter != null) {
-                            mAdapter.getPageAdapter().setTextColor(integer);
+                            mAdapter.setTextColor(integer);
                         }
                     }
 
@@ -164,7 +172,7 @@ public class ReaderActivity extends BaseActivity {
                     @Override
                     public void onNext(Float aFloat) {
                         if (mAdapter != null) {
-                            mAdapter.getPageAdapter().setTextSize(ViewUtils.spToPx(ReaderActivity.this, aFloat));
+                            mAdapter.setTextSize(ViewUtils.spToPx(ReaderActivity.this, aFloat));
                         }
                     }
 

@@ -1,4 +1,4 @@
-package com.zhangqiang.sl.reader.parser.impl;
+package com.zhangqiang.sl.reader.parser.impl.txt;
 
 import com.zhangqiang.sl.reader.parser.Book;
 import com.zhangqiang.sl.reader.parser.BookParser;
@@ -68,7 +68,7 @@ public abstract class BaseTxtBookParser extends BookParser {
                 Paragraph paragraph = new ParagraphImpl(elements, start, offset);
                 paragraphs.add(paragraph);
             }
-            return new TxtBook(chapters, paragraphs);
+            return new TxtBook(parseBookName(),chapters, paragraphs);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -86,4 +86,6 @@ public abstract class BaseTxtBookParser extends BookParser {
         }
         return null;
     }
+
+    protected abstract String parseBookName();
 }

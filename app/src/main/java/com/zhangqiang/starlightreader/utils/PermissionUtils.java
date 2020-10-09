@@ -3,6 +3,7 @@ package com.zhangqiang.starlightreader.utils;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 
 import com.zhangqiang.permissionrequest.PermissionRequestHelper;
@@ -24,6 +25,11 @@ public class PermissionUtils {
                 }
             }
         });
+    }
+
+    public static boolean hasSDPermission(FragmentActivity activity){
+        return ActivityCompat.checkSelfPermission(activity,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     public static class PermissionRefusedException extends RuntimeException{

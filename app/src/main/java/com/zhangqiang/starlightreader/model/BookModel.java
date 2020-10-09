@@ -4,10 +4,8 @@ import android.content.Context;
 
 import com.zhangqiang.sl.reader.parser.Book;
 import com.zhangqiang.sl.reader.parser.BookParser;
-import com.zhangqiang.sl.reader.parser.impl.TxtBookParser;
+import com.zhangqiang.sl.reader.parser.impl.txt.TxtBookParser;
 import com.zhangqiang.starlightreader.reader.AssetTxtParser;
-
-import java.io.File;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;

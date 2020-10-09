@@ -3,17 +3,17 @@ package com.zhangqiang.sl.framework.text;
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
-import com.zhangqiang.sl.framework.view.MeasureOptions;
 import com.zhangqiang.sl.framework.view.SLView;
 
-public class SLTextView extends SLView {
+public class SingleLineTextView extends SLView {
 
     private final boolean debug = false;
-    private static final String TAG = SLTextView.class.getCanonicalName();
+    private static final String TAG = SingleLineTextView.class.getCanonicalName();
     private SLPaint mPaint;
     private CharSequence mText;
+    private float mLineHeightMultiple = 1.2f;
 
-    public SLTextView(SLContext context) {
+    public SingleLineTextView(SLContext context) {
         super(context);
         mPaint = context.newPaint();
     }
@@ -31,23 +31,13 @@ public class SLTextView extends SLView {
         super.onMeasure(widthOptions, heightOptions);
         if (mText != null && mText.length() > 0) {
 
-            int textWidth;
-            if (mText.length() == 1) {
-                char c = mText.charAt(0);
-                float textSize = mPaint.getTextSize();
-                float width = CharMeasuredCache.get(c, textSize);
-                if (width < 0) {
-                    width = (int) mPaint.measureText(String.valueOf(c), 0, 1);
-                    CharMeasuredCache.put(c,textSize,width);
-                }
-                textWidth = (int) width;
-            } else {
-                textWidth = (int) mPaint.measureText(mText.toString(), 0, mText.length());
-            }
-            int textHeight = (int) mPaint.getTextHeight();
-            setMeasuredResult(resolveSizeAndState(textWidth, widthOptions), resolveSizeAndState(textHeight, heightOptions));
+            int textWidth = (int) mPaint.measureText(mText.toString(), 0, mText.length());
+            int textHeight = (int) (mPaint.getTextHeight() * mLineHeightMultiple);
+            setMeasuredResult(resolveSizeAndState(textWidth + getPaddingLeft() + getPaddingRight(), widthOptions),
+                    resolveSizeAndState(textHeight + getPaddingTop() + getPaddingBottom(), heightOptions));
         } else {
-            setMeasuredResult(resolveSizeAndState(0, widthOptions), resolveSizeAndState(0, heightOptions));
+            setMeasuredResult(resolveSizeAndState(getPaddingLeft() + getPaddingRight(), widthOptions),
+                    resolveSizeAndState(getPaddingTop() + getPaddingBottom(), heightOptions));
         }
     }
 
@@ -59,7 +49,9 @@ public class SLTextView extends SLView {
         }
 
         if (mText != null && mText.length() > 0) {
-            canvas.drawText(mText.toString(), 0, mText.length(), 0, -mPaint.ascent(), mPaint);
+            float textHeight = mPaint.getTextHeight();
+            int textTop = (int) ((getHeight() - getPaddingTop() - getPaddingBottom() - textHeight) / 2 + getPaddingTop());
+            canvas.drawText(mText.toString(), 0, mText.length(), getPaddingLeft(), textTop - mPaint.ascent(), mPaint);
         }
     }
 
@@ -68,7 +60,7 @@ public class SLTextView extends SLView {
     }
 
     public void setText(CharSequence text) {
-        if (this.mText != text) {
+        if (mText == null && text != null || this.mText != null && !mText.equals(text)) {
             this.mText = text;
             if (debug) {
                 SLContext.getLogger().logI(TAG, "设置文字：" + text);
@@ -100,10 +92,21 @@ public class SLTextView extends SLView {
         return text.length();
     }
 
-    public void setTextColor(int color){
+    public void setTextColor(int color) {
         if (mPaint.getColor() != color) {
             mPaint.setColor(color);
             invalidate();
+        }
+    }
+
+    public float getLineHeightMultiple() {
+        return mLineHeightMultiple;
+    }
+
+    public void setLineHeightMultiple(float lineHeightMultiple) {
+        if (mLineHeightMultiple != lineHeightMultiple) {
+            this.mLineHeightMultiple = lineHeightMultiple;
+            requestLayout();
         }
     }
 }

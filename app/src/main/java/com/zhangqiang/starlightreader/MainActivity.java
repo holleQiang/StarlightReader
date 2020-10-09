@@ -21,6 +21,5 @@ public class MainActivity extends BaseActivity {
                 .commit();
 
 
-//        View
     }
 }

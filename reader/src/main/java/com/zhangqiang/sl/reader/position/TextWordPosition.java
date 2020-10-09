@@ -6,34 +6,38 @@ import com.zhangqiang.sl.reader.parser.Paragraph;
 
 public class TextWordPosition {
 
-    private long position;
-
+    private int mParagraphIndex;
+    private int mElementIndex;
 
     public TextWordPosition() {
     }
 
     public TextWordPosition(int paragraphIndex, int elementIndex) {
-        position = (long) paragraphIndex << 32 & elementIndex;
+        mParagraphIndex = paragraphIndex;
+        mElementIndex = elementIndex;
     }
 
     public int getParagraphIndex() {
-        return (int) (position >> 32);
+        return mParagraphIndex;
     }
 
     public void set(TextWordPosition position) {
-        this.position = position.position;
+        this.mParagraphIndex = position.mParagraphIndex;
+        mElementIndex = position.mElementIndex;
     }
 
     public void set(int paragraphIndex, int elementIndex) {
-        position = (long) paragraphIndex << 32 | elementIndex;
+        mParagraphIndex = paragraphIndex;
+        mElementIndex = elementIndex;
     }
 
     public int getElementIndex() {
-        return (int) position;
+        return mElementIndex;
     }
 
     public void reset() {
-        position = 0;
+        mParagraphIndex = 0;
+        mElementIndex = 0;
     }
 
     public static boolean isEndOfBook(Book book, TextWordPosition position) {

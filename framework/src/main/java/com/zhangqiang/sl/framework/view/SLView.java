@@ -55,13 +55,16 @@ public class SLView {
         if (mMeasuredCache == null) {
             mMeasuredCache = new HashMap<>();
         }
-        long key = (long) widthOptions << 32 & heightOptions & 0xffffffffL;
+        long key = (long) widthOptions << 32 | heightOptions;
         int oldWidthOptions = (int) (mOldMeasOptions >> 32);
         int oldHeightOptions = (int) mOldMeasOptions;
         boolean forceLayout = (mPrivateFlags & P_FLAG_FORCE_LAYOUT) == P_FLAG_FORCE_LAYOUT;
-        if (forceLayout || oldWidthOptions != widthOptions || oldHeightOptions != heightOptions
-                || MeasureOptions.getMode(widthOptions) != MeasureOptions.MODE_EXACTLY || MeasureOptions.getMode(heightOptions) != MeasureOptions.MODE_EXACTLY
-                || getMeasuredWidth() != MeasureOptions.getSize(widthOptions) || getMeasuredHeight() != MeasureOptions.getSize(heightOptions)) {
+        boolean optionsChanged = oldWidthOptions != widthOptions || oldHeightOptions != heightOptions;
+        boolean optionsExactly = MeasureOptions.getMode(widthOptions) == MeasureOptions.MODE_EXACTLY
+                && MeasureOptions.getMode(heightOptions) == MeasureOptions.MODE_EXACTLY;
+        boolean matchOptionSize = getMeasuredWidth() == MeasureOptions.getSize(widthOptions) && getMeasuredHeight() == MeasureOptions.getSize(heightOptions);
+        boolean needLayout = optionsChanged && (!optionsExactly || !matchOptionSize);
+        if (forceLayout || needLayout){
 
             Long value = forceLayout ? null : mMeasuredCache.get(key);
             if (value == null) {
@@ -76,8 +79,8 @@ public class SLView {
             }
             mPrivateFlags |= P_FLAG_LAYOUT_REQUIRED;
         }
-        mOldMeasOptions = (long) widthOptions << 32 & heightOptions & 0xffffffffL;
-        mMeasuredCache.put(key, (long) mMeasuredWidth << 32 & mMeasuredHeight & 0xffffffffL);
+        mOldMeasOptions = (long) widthOptions << 32 | heightOptions;
+        mMeasuredCache.put(key, (long) mMeasuredWidth << 32 | mMeasuredHeight);
     }
 
     protected void onMeasure(int widthOptions, int heightOptions) {
@@ -101,12 +104,15 @@ public class SLView {
 
     public final void layout(int left, int top, int right, int bottom) {
 
-        mLeft = left;
-        mTop = top;
-        mWidth = right - left;
-        mHeight = bottom - top;
-        if ((mPrivateFlags & P_FLAG_LAYOUT_REQUIRED) == P_FLAG_LAYOUT_REQUIRED) {
-            onLayout(true, left, top, right, bottom);
+        boolean changed = mLeft != left || mTop != top || mLeft + mWidth != right || mTop + mHeight != bottom;
+        if (changed) {
+            mLeft = left;
+            mTop = top;
+            mWidth = right - left;
+            mHeight = bottom - top;
+        }
+        if (changed || (mPrivateFlags & P_FLAG_LAYOUT_REQUIRED) == P_FLAG_LAYOUT_REQUIRED) {
+            onLayout(changed, left, top, right, bottom);
             mPrivateFlags &= ~P_FLAG_LAYOUT_REQUIRED;
         }
         mPrivateFlags &= ~P_FLAG_FORCE_LAYOUT;
@@ -119,6 +125,7 @@ public class SLView {
     final void draw(SLCanvas canvas) {
         long currentTimeMillis = System.currentTimeMillis();
         boolean isOpaque = (mPrivateFlags & P_FLAG_DIRTY_MASK) == P_FLAG_DIRTY_OPAQUE;
+        mPrivateFlags = mPrivateFlags & ~P_FLAG_DIRTY_MASK;
         computeScroll();
         if (!isOpaque) {
             drawBackground(canvas);
@@ -518,5 +525,35 @@ public class SLView {
 
     public void forceLayout() {
         mPrivateFlags |= P_FLAG_FORCE_LAYOUT;
+    }
+
+    public void setPadding(int paddingLeft,int paddingTop,int paddingRight,int paddingBottom){
+        boolean changed = mPaddingLeft != paddingLeft
+                || mPaddingTop != paddingTop
+                || mPaddingRight != paddingRight
+                || mPaddingBottom != paddingBottom;
+        if (changed) {
+            mPaddingLeft = paddingLeft;
+            mPaddingTop = paddingTop;
+            mPaddingRight = paddingRight;
+            mPaddingBottom = paddingBottom;
+            requestLayout();
+        }
+    }
+
+    public int getPaddingLeft() {
+        return mPaddingLeft;
+    }
+
+    public int getPaddingTop() {
+        return mPaddingTop;
+    }
+
+    public int getPaddingRight() {
+        return mPaddingRight;
+    }
+
+    public int getPaddingBottom() {
+        return mPaddingBottom;
     }
 }

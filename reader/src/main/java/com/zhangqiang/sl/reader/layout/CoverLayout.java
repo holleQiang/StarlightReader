@@ -25,7 +25,7 @@ public class CoverLayout extends SLViewGroup {
     private int mDragDirection;
     private boolean mInLayout;
     private boolean mLayoutBlocked;
-    private Adapter mAdapter;
+    private CoverLayoutAdapter mAdapter;
     private RecycleBin mRecycleBin;
     private SLView mTouchView;
     private final List<ScrollItem> mActiveScrollItems = new ArrayList<>();
@@ -316,15 +316,30 @@ public class CoverLayout extends SLViewGroup {
         }
     }
 
-    public void setAdapter(Adapter mAdapter) {
+    public void setAdapter(CoverLayoutAdapter adapter) {
         mRecycleBin.clear();
         removeAllViewsInLayout();
         abortAnimations();
-        this.mAdapter = mAdapter;
+        if (mAdapter != null) {
+            mAdapter.unRegisterObserver(mObserver);
+            mAdapter = null;
+        }
+        this.mAdapter = adapter;
+        if (mAdapter != null) {
+            mAdapter.registerObserver(mObserver);
+        }
         requestLayout();
     }
 
-
+    private final CoverLayoutAdapter.Observer mObserver = new CoverLayoutAdapter.Observer() {
+        @Override
+        public void onDataChanged() {
+            mRecycleBin.clear();
+            removeAllViewsInLayout();
+            abortAnimations();
+            requestLayout();
+        }
+    };
 
     private class RecycleBin {
 

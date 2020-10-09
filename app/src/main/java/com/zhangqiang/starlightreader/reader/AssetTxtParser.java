@@ -2,9 +2,7 @@ package com.zhangqiang.starlightreader.reader;
 
 import android.content.Context;
 
-import com.zhangqiang.sl.reader.parser.Book;
-import com.zhangqiang.sl.reader.parser.BookParser;
-import com.zhangqiang.sl.reader.parser.impl.BaseTxtBookParser;
+import com.zhangqiang.sl.reader.parser.impl.txt.BaseTxtBookParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +21,11 @@ public class AssetTxtParser extends BaseTxtBookParser {
     @Override
     protected InputStream openStream() throws IOException {
         return context.getAssets().open(assetName);
+    }
+
+    @Override
+    protected String parseBookName() {
+        return assetName;
     }
 
 

@@ -1,4 +1,4 @@
-package com.zhangqiang.sl.reader.parser.impl;
+package com.zhangqiang.sl.reader.parser.impl.txt;
 
 import com.zhangqiang.sl.reader.parser.Element;
 import com.zhangqiang.sl.reader.parser.Paragraph;

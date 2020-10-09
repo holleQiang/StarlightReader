@@ -7,7 +7,7 @@ import com.zhangqiang.sl.reader.parser.Element;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Adapter {
+public abstract class PageViewAdapter {
 
     private final List<AdapterObserver> adapterObservers = new ArrayList<>();
 
@@ -19,9 +19,7 @@ public abstract class Adapter {
 
     public interface AdapterObserver {
 
-        void onRequestLayout();
-
-        void onRequestInvalidate();
+        void onDataChanged();
     }
 
     public void registerAdapterObserver(AdapterObserver observer) {
@@ -35,15 +33,10 @@ public abstract class Adapter {
         adapterObservers.remove(observer);
     }
 
-    protected void requestInvalidate() {
+    protected void notifyDataChanged() {
         for (int i = adapterObservers.size() - 1; i >= 0; i--) {
-            adapterObservers.get(i).onRequestInvalidate();
+            adapterObservers.get(i).onDataChanged();
         }
     }
 
-    protected void requestLayout() {
-        for (int i = adapterObservers.size() - 1; i >= 0; i--) {
-            adapterObservers.get(i).onRequestLayout();
-        }
-    }
 }

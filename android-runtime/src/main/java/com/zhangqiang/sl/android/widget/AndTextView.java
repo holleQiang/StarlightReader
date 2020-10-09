@@ -9,10 +9,10 @@ import com.zhangqiang.sl.android.AndroidPaint;
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
-import com.zhangqiang.sl.framework.text.SLTextView;
+import com.zhangqiang.sl.framework.text.SingleLineTextView;
 import com.zhangqiang.sl.framework.view.MeasureOptions;
 
-public class AndTextView extends SLTextView {
+public class AndTextView extends SingleLineTextView {
 
     private StaticLayout staticLayout;
 

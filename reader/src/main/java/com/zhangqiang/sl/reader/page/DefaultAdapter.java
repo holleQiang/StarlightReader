@@ -2,13 +2,13 @@ package com.zhangqiang.sl.reader.page;
 
 import com.zhangqiang.sl.framework.image.SLColorDrawable;
 import com.zhangqiang.sl.framework.image.SLImageView;
-import com.zhangqiang.sl.framework.text.SLTextView;
+import com.zhangqiang.sl.framework.text.SingleLineTextView;
 import com.zhangqiang.sl.framework.view.SLView;
 import com.zhangqiang.sl.framework.view.SLViewGroup;
 import com.zhangqiang.sl.reader.parser.Element;
-import com.zhangqiang.sl.reader.parser.impl.TextElement;
+import com.zhangqiang.sl.reader.parser.impl.txt.TextElement;
 
-public class DefaultAdapter extends Adapter {
+public class DefaultAdapter extends PageViewAdapter {
 
     public static final int ITEM_TYPE_TEXT = 0;
     public static final int ITEM_TYPE_IMAGE = 1;
@@ -28,11 +28,11 @@ public class DefaultAdapter extends Adapter {
     public SLView getView(SLViewGroup parent, Element element, int itemType, SLView convertView) {
         if (itemType == ITEM_TYPE_TEXT) {
 
-            SLTextView textView;
+            SingleLineTextView textView;
             if (convertView == null) {
-                textView = new SLTextView(parent.getContext());
+                textView = new SingleLineTextView(parent.getContext());
             } else {
-                textView = (SLTextView) convertView;
+                textView = (SingleLineTextView) convertView;
             }
 
             textView.setText(((TextElement) element).getText());
@@ -57,14 +57,14 @@ public class DefaultAdapter extends Adapter {
     public void setTextSize(float textSize) {
         if (this.textSize != textSize) {
             this.textSize = textSize;
-            requestLayout();
+            notifyDataChanged();
         }
     }
 
     public void setTextColor(int textColor) {
         if (this.textColor != textColor) {
             this.textColor = textColor;
-            requestInvalidate();
+            notifyDataChanged();
         }
     }
 

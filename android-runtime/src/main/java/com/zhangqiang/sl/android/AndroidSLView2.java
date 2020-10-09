@@ -85,9 +85,9 @@ public class AndroidSLView2 extends View implements ISLView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        ((ViewRenderBuffer) mViewRoot.getRenderBuffer()).setCanvas(canvas);
         int size = mRunnableList.size();
         if (size > 0) {
+            ((ViewRenderBuffer) mViewRoot.getRenderBuffer()).setCanvas(canvas);
             for (int i = size - 1; i >= 0; i--) {
                 mRunnableList.get(i).run();
                 mRunnableList.remove(i);

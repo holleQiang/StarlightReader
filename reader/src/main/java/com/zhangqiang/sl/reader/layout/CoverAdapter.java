@@ -1,20 +1,30 @@
 package com.zhangqiang.sl.reader.layout;
 
+import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.image.SLColorDrawable;
+import com.zhangqiang.sl.framework.layout.SLLinearLayout;
 import com.zhangqiang.sl.framework.view.SLView;
 import com.zhangqiang.sl.framework.view.SLViewGroup;
-import com.zhangqiang.sl.reader.layout.CoverLayout;
 import com.zhangqiang.sl.reader.page.DefaultAdapter;
 import com.zhangqiang.sl.reader.page.PageView;
+import com.zhangqiang.sl.reader.page.PageViewAdapter;
 import com.zhangqiang.sl.reader.parser.Book;
+import com.zhangqiang.sl.reader.parser.impl.txt.TxtBook;
 import com.zhangqiang.sl.reader.position.TextWordPosition;
+import com.zhangqiang.sl.reader.view.TopBarView;
 
-public class CoverAdapter extends Adapter {
+public class CoverAdapter extends CoverLayoutAdapter {
 
     private Book book;
     private PageView.RecycleBin recycleBin;
     private TextWordPosition mPosition;
-    private DefaultAdapter mPageAdapter = new DefaultAdapter();
+    private int mTextSize = 50;
+    private int mTextColor;
+    private int mContentPaddingLeft,mContentPaddingTop,mContentPaddingRight,mContentPaddingBottom;
+    private int mTopBarPaddingLeft,mTopBarPaddingTop,mTopBarPaddingRight,mTopBarPaddingBottom;
+    private int mParagraphSpace;
+    private int mTopBarTextSize = 30;
+    private int mTopBarTextColor;
 
     public CoverAdapter(Book book, TextWordPosition position) {
         this.book = book;
@@ -25,27 +35,39 @@ public class CoverAdapter extends Adapter {
     @Override
     public SLView getView(SLViewGroup parent, SLView prevView, SLView convertView, int intent) {
         SLView view;
+        SLContext context = parent.getContext();
+
+        SLLinearLayout contentView;
+        if (convertView != null) {
+            contentView = (SLLinearLayout) convertView;
+        } else {
+            contentView = new SLLinearLayout(context);
+            contentView.addView(new TopBarView(context));
+            PageView pageView = new PageView(context);
+            pageView.setLayoutParams(new SLLinearLayout.LayoutParams(SLViewGroup.LayoutParams.SIZE_MATCH_PARENT,
+                    SLViewGroup.LayoutParams.SIZE_MATCH_PARENT));
+            contentView.addView(pageView);
+        }
+
+        TopBarView topBarView = (TopBarView) contentView.getChildAt(0);
+        topBarView.setTextSize(mTopBarTextSize);
+        topBarView.setTextColor(mTopBarTextColor);
+        topBarView.setBookName(book.getName());
+        topBarView.setPadding(mTopBarPaddingLeft,mTopBarPaddingTop,mTopBarPaddingRight,mTopBarPaddingBottom);
+
+        PageView pageView = (PageView) contentView.getChildAt(1);
+        pageView.setRecycleBin(recycleBin);
+        pageView.setPadding(mContentPaddingLeft,mContentPaddingTop,mContentPaddingRight,mContentPaddingBottom);
+        pageView.setParagraphSpace(mParagraphSpace);
+
         if (prevView == null) {
-            PageView pageView;
-            if (convertView != null) {
-                pageView = (PageView) convertView;
-            } else {
-                pageView = new PageView(parent.getContext());
-                pageView.setRecycleBin(recycleBin);
-            }
+
             pageView.setBook(book, mPosition, false);
-            pageView.setAdapter(mPageAdapter);
-            view = pageView;
+            pageView.setAdapter(makePageViewAdapter());
         } else {
 
-            PageView pageView;
-            if (convertView != null) {
-                pageView = (PageView) convertView;
-            } else {
-                pageView = new PageView(parent.getContext());
-                pageView.setRecycleBin(recycleBin);
-            }
-            PageView prevPageView = (PageView) prevView;
+            SLLinearLayout prevContentView = (SLLinearLayout) prevView;
+            PageView prevPageView = (PageView) prevContentView.getChildAt(1);
             if (intent == CoverLayout.INTENT_PREVIOUS) {
 
                 TextWordPosition startPosition = prevPageView.getStartPosition();
@@ -63,16 +85,88 @@ public class CoverAdapter extends Adapter {
                 TextWordPosition position = TextWordPosition.next(book, endPosition);
                 pageView.setBook(book, position, false);
             }
-            pageView.setAdapter(mPageAdapter);
-            view = pageView;
+            pageView.setAdapter(makePageViewAdapter());
         }
+
+        if (book instanceof TxtBook) {
+            topBarView.setChapterName(((TxtBook) book).getChapterName(pageView.getPosition()));
+        }
+
+        view = contentView;
         view.setBackground(new SLColorDrawable(0xffffffff));
-//        view.setDrawingCacheEnable(true);
+        view.setDrawingCacheEnable(true);
         return view;
     }
 
 
-    public DefaultAdapter getPageAdapter() {
-        return mPageAdapter;
+    public void setTextSize(int textSize) {
+        if (mTextSize != textSize) {
+            this.mTextSize = textSize;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTextColor(int textColor) {
+        if (mTextColor != textColor) {
+            this.mTextColor = textColor;
+            notifyDataChanged();
+        }
+    }
+
+    private PageViewAdapter makePageViewAdapter(){
+
+        DefaultAdapter adapter = new DefaultAdapter();
+        adapter.setTextSize(mTextSize);
+        adapter.setTextColor(mTextColor);
+        return adapter;
+    }
+
+    public void setContentPadding(int paddingLeft,int paddingTop,int paddingRight,int paddingBottom) {
+        boolean changed = mContentPaddingLeft != paddingLeft
+                || mContentPaddingTop != paddingTop
+                || mContentPaddingRight != paddingRight
+                || mContentPaddingBottom != paddingBottom;
+        if (changed) {
+            this.mContentPaddingLeft = paddingLeft;
+            this.mContentPaddingTop = paddingTop;
+            this.mContentPaddingRight = paddingRight;
+            this.mContentPaddingBottom = paddingBottom;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTopBarPadding(int paddingLeft,int paddingTop,int paddingRight,int paddingBottom) {
+        boolean changed = mTopBarPaddingLeft != paddingLeft
+                || mTopBarPaddingTop != paddingTop
+                || mTopBarPaddingRight != paddingRight
+                || mTopBarPaddingBottom != paddingBottom;
+        if (changed) {
+            this.mTopBarPaddingLeft = paddingLeft;
+            this.mTopBarPaddingTop = paddingTop;
+            this.mTopBarPaddingRight = paddingRight;
+            this.mTopBarPaddingBottom = paddingBottom;
+            notifyDataChanged();
+        }
+    }
+
+    public void setParagraphSpace(int paragraphSpace) {
+        if (mParagraphSpace != paragraphSpace) {
+            this.mParagraphSpace = paragraphSpace;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTopBarTextSize(int topBarTextSize) {
+        if (mTopBarTextSize != topBarTextSize) {
+            this.mTopBarTextSize = topBarTextSize;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTopBarTextColor(int topBarTextColor) {
+        if (mTopBarTextColor != topBarTextColor) {
+            this.mTopBarTextColor = topBarTextColor;
+            notifyDataChanged();
+        }
     }
 }

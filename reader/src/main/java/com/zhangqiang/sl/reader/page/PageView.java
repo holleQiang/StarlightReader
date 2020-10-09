@@ -24,8 +24,8 @@ public class PageView extends SLViewGroup {
     private boolean mReverse;
     private RecycleBin mRecycleBin;
     private final List<LineInfo> mLineInfoList = new ArrayList<>();
-    private Adapter mAdapter = new DefaultAdapter();
-    private int mParagraphSpace = 50;
+    private PageViewAdapter mAdapter = new DefaultAdapter();
+    private int mParagraphSpace;
 
     public PageView(SLContext context) {
         super(context);
@@ -68,8 +68,8 @@ public class PageView extends SLViewGroup {
 
     private void layoutChildFromEnd() {
 
-        final int maxWidth = getWidth();
-        final int maxHeight = getHeight();
+        final int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+        final int maxHeight = getHeight() - getPaddingTop() - getPaddingBottom();
         int currentHeight = 0;
         int lastParagraphIndex = -1;
         int paragraphCount = 0;
@@ -124,8 +124,8 @@ public class PageView extends SLViewGroup {
     private void layoutChildFromStart() {
 
 
-        final int maxWidth = getWidth();
-        final int maxHeight = getHeight();
+        final int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+        final int maxHeight = getHeight() - getPaddingTop() - getPaddingBottom();
         int currentHeight = 0;
         int lastParagraphIndex = -1;
         int paragraphCount = 0;
@@ -190,23 +190,27 @@ public class PageView extends SLViewGroup {
 
     private void layoutLineInfo(List<LineInfo> lineInfoList, int totalHeight, int paragraphCount) {
         long currentTimeMillis = System.currentTimeMillis();
-        int l = 0;
-        int t = 0;
+        int l = getPaddingLeft();
+        int t = getPaddingTop();
         int r;
         int b;
 
-        int fixParagraphSpace = (paragraphCount > 1 ? (getHeight() - totalHeight) / (paragraphCount - 1) : 0) + mParagraphSpace;
+        int fixParagraphSpace = (paragraphCount > 1 ? (getHeight() - getPaddingTop() - getPaddingBottom() - totalHeight) / (paragraphCount - 1) : 0) + mParagraphSpace;
         for (LineInfo info : lineInfoList) {
             List<SLView> lineViews = info.lineViews;
-
+            int lineViewCount = lineViews.size();
+            int fixElementSpace = 0;
+            if (lineViewCount > 1 && !TextWordPosition.isEndOfParagraph(mBook,info.endPosition)) {
+                fixElementSpace = (getWidth() - getPaddingLeft() - getPaddingRight() - info.lineWidth) / (lineViewCount - 1);
+            }
             for (SLView lineView : lineViews) {
                 addViewInLayout(lineView);
                 r = l + lineView.getMeasuredWidth();
                 b = t + lineView.getMeasuredHeight();
                 lineView.layout(l, t, r, b);
-                l = r;
+                l = r + fixElementSpace;
             }
-            l = 0;
+            l = getPaddingLeft();
             t += info.lineHeight;
             if (info.endPosition.getParagraphIndex() == -1) {
                 SLContext.getLogger().logI(TAG, "======parag=====cost====");
@@ -227,7 +231,7 @@ public class PageView extends SLViewGroup {
         requestLayout();
     }
 
-    public void setAdapter(Adapter adapter) {
+    public void setAdapter(PageViewAdapter adapter) {
         if (mAdapter != null) {
             mAdapter.unRegisterAdapterObserver(mObserver);
             mAdapter = null;
@@ -239,15 +243,10 @@ public class PageView extends SLViewGroup {
         requestLayout();
     }
 
-    private final Adapter.AdapterObserver mObserver = new Adapter.AdapterObserver() {
+    private final PageViewAdapter.AdapterObserver mObserver = new PageViewAdapter.AdapterObserver() {
         @Override
-        public void onRequestLayout() {
+        public void onDataChanged() {
             requestLayout();
-        }
-
-        @Override
-        public void onRequestInvalidate() {
-            invalidate();
         }
     };
 
@@ -260,7 +259,7 @@ public class PageView extends SLViewGroup {
         if (scrapView != null && scrapView != view) {
             mRecycleBin.addScrapView(itemViewType, scrapView);
         }
-        view.forceLayout();
+//        view.forceLayout();
         LayoutParams layoutParams = ((LayoutParams) view.getLayoutParams());
         if (layoutParams == null) {
             layoutParams = generateDefaultLayoutParams();
@@ -413,7 +412,10 @@ public class PageView extends SLViewGroup {
             Element element = paragraph.getElement(currentElementIndex);
             SLView child = createView(element);
 
-            measureChild(child, getWidth(), MeasureOptions.MODE_EXACTLY, getHeight(), MeasureOptions.MODE_EXACTLY);
+            measureChild(child, getWidth() - getPaddingLeft() - getPaddingRight(),
+                    MeasureOptions.MODE_EXACTLY,
+                    getHeight() - getPaddingTop() - getPaddingBottom(),
+                    MeasureOptions.MODE_EXACTLY);
 
             int measuredWidth = child.getMeasuredWidth();
 
@@ -424,10 +426,10 @@ public class PageView extends SLViewGroup {
 
             if (currentLineInfo == null) {
                 currentLineInfo = LineInfo.obtain();
-                currentLineInfo.startPosition.set(paragraphIndex,currentElementIndex);
+                currentLineInfo.startPosition.set(paragraphIndex, currentElementIndex);
             }
             currentLineInfo.addLineView(child);
-            currentLineInfo.endPosition.set(paragraphIndex,currentElementIndex);
+            currentLineInfo.endPosition.set(paragraphIndex, currentElementIndex);
 
             if (debug) {
 //                SLContext.getLogger().logI(TAG, paragraphIndex + "=======add element=====" + ((TextElement) element).getText());
@@ -454,7 +456,7 @@ public class PageView extends SLViewGroup {
         private HashMap<Integer, ViewNode> mScrapViewsMap = new HashMap<>();
         private int mScrapViewCount;
 
-        public SLView getScrapView(int viewType) {
+        SLView getScrapView(int viewType) {
             ViewNode mScrapViews = mScrapViewsMap.get(viewType);
             ViewNode node = mScrapViews;
             if (node != null) {
@@ -500,7 +502,7 @@ public class PageView extends SLViewGroup {
             }
         }
 
-        public int getScrapViewCount() {
+        int getScrapViewCount() {
             return mScrapViewCount;
         }
     }
@@ -543,4 +545,14 @@ public class PageView extends SLViewGroup {
         return mBook;
     }
 
+    public TextWordPosition getPosition() {
+        return mPosition;
+    }
+
+    public void setParagraphSpace(int paragraphSpace) {
+        if (mParagraphSpace != paragraphSpace) {
+            this.mParagraphSpace = paragraphSpace;
+            requestLayout();
+        }
+    }
 }
