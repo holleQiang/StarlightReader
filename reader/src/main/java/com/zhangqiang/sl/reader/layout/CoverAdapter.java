@@ -17,7 +17,7 @@ public class CoverAdapter extends CoverLayoutAdapter {
 
     private Book book;
     private PageView.RecycleBin recycleBin;
-    private TextWordPosition mPosition;
+    private PositionFactory mPositionFactory;
     private int mTextSize = 50;
     private int mTextColor;
     private int mContentPaddingLeft,mContentPaddingTop,mContentPaddingRight,mContentPaddingBottom;
@@ -26,10 +26,10 @@ public class CoverAdapter extends CoverLayoutAdapter {
     private int mTopBarTextSize = 30;
     private int mTopBarTextColor;
 
-    public CoverAdapter(Book book, TextWordPosition position) {
+    public CoverAdapter(Book book, PositionFactory factory) {
         this.book = book;
         recycleBin = new PageView.RecycleBin();
-        mPosition = position;
+        mPositionFactory = factory;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class CoverAdapter extends CoverLayoutAdapter {
 
         if (prevView == null) {
 
-            pageView.setBook(book, mPosition, false);
+            pageView.setBook(book, mPositionFactory.getReadPosition(), false);
             pageView.setAdapter(makePageViewAdapter());
         } else {
 
@@ -168,5 +168,10 @@ public class CoverAdapter extends CoverLayoutAdapter {
             this.mTopBarTextColor = topBarTextColor;
             notifyDataChanged();
         }
+    }
+
+    public interface PositionFactory{
+
+       TextWordPosition getReadPosition();
     }
 }

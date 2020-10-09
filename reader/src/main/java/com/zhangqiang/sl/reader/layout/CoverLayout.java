@@ -33,6 +33,7 @@ public class CoverLayout extends SLViewGroup {
     public static final int INTENT_NEXT = 1;
     private int mDragIntent;
     private OnPageChangeListener onPageChangeListener;
+    private boolean mDataChanged;
 
     public CoverLayout(SLContext context) {
         super(context);
@@ -77,6 +78,7 @@ public class CoverLayout extends SLViewGroup {
         makeAndAddView(null, INTENT_NEXT);
 
         mRecycleBin.removeActiveViews();
+        mDataChanged = false;
     }
 
 
@@ -334,9 +336,7 @@ public class CoverLayout extends SLViewGroup {
     private final CoverLayoutAdapter.Observer mObserver = new CoverLayoutAdapter.Observer() {
         @Override
         public void onDataChanged() {
-            mRecycleBin.clear();
-            removeAllViewsInLayout();
-            abortAnimations();
+            mDataChanged = true;
             requestLayout();
         }
     };
@@ -471,11 +471,14 @@ public class CoverLayout extends SLViewGroup {
 
     private SLView makeAndAddView(SLView prevView, int viewType) {
 
-        SLView activeView = mRecycleBin.getActiveView(prevView);
-        if (activeView != null) {
-            setupView(activeView);
-            return activeView;
+        if (!mDataChanged) {
+            SLView activeView = mRecycleBin.getActiveView(prevView);
+            if (activeView != null) {
+                setupView(activeView);
+                return activeView;
+            }
         }
+
         SLView view = obtainView(prevView, viewType);
         if (view != null) {
             setupView(view);

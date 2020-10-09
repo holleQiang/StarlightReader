@@ -15,6 +15,7 @@ import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 import com.zhangqiang.instancerestore.annotations.Instance;
 import com.zhangqiang.sl.android.ISLView;
+import com.zhangqiang.sl.framework.layout.SLLinearLayout;
 import com.zhangqiang.sl.framework.view.SLView;
 import com.zhangqiang.sl.reader.layout.CoverLayout;
 import com.zhangqiang.sl.reader.layout.CoverAdapter;
@@ -76,8 +77,9 @@ public class ReaderActivity extends BaseActivity {
         mCoverLayout.setOnPageChangeListener(new CoverLayout.OnPageChangeListener() {
             @Override
             public void onPageChange(SLView view) {
-                if (view instanceof PageView) {
-                    TextWordPosition startPosition = ((PageView) view).getStartPosition();
+                if (view instanceof SLLinearLayout) {
+                    PageView pageView = (PageView) ((SLLinearLayout) view).getChildAt(1);
+                    TextWordPosition startPosition = pageView.getStartPosition();
                     ReadRecordModel.updateReadPosition(bookPath, startPosition);
                 }
             }
@@ -126,7 +128,12 @@ public class ReaderActivity extends BaseActivity {
     }
 
     private void setupBook(Book book, TextWordPosition readPosition) {
-        mAdapter = new CoverAdapter(book, readPosition);
+        mAdapter = new CoverAdapter(book, new CoverAdapter.PositionFactory() {
+            @Override
+            public TextWordPosition getReadPosition() {
+                return ReadRecordModel.getReadPosition(bookPath);
+            }
+        });
         mAdapter.setTextColor(ReadSettingsModel.getTxtColor());
         mAdapter.setTextSize(ViewUtils.spToPx(ReaderActivity.this, ReadSettingsModel.getTxtSize()));
         int hPadding = ViewUtils.dpToPx(this,16);
