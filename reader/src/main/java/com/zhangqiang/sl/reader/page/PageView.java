@@ -412,10 +412,9 @@ public class PageView extends SLViewGroup {
             Element element = paragraph.getElement(currentElementIndex);
             SLView child = createView(element);
 
-            measureChild(child, getWidth() - getPaddingLeft() - getPaddingRight(),
-                    MeasureOptions.MODE_EXACTLY,
-                    getHeight() - getPaddingTop() - getPaddingBottom(),
-                    MeasureOptions.MODE_EXACTLY);
+            int widthMeasureOptions = MeasureOptions.make(getWidth(), MeasureOptions.MODE_EXACTLY);
+            int heightMeasureOptions = MeasureOptions.make(getHeight(), MeasureOptions.MODE_EXACTLY);
+            measureChild(widthMeasureOptions,heightMeasureOptions,child);
 
             int measuredWidth = child.getMeasuredWidth();
 

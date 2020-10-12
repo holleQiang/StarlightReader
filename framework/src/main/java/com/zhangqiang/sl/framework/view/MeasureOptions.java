@@ -16,17 +16,18 @@ public final class MeasureOptions {
     }
 
     /**
-     * 根据就是这么大
+     * 就是这么大
      */
-    public static final int MODE_EXACTLY = 0;
+    public static final int MODE_UNSPECIFIED = 0;
+    /**
+     * 只能这么大
+     */
+    public static final int MODE_EXACTLY = 1 << MODE_SHIFT;
     /**
      * 最多xx大
      */
-    public static final int MODE_AD_MOST = 1 << MODE_SHIFT;
-    /**
-     * 想多大就多大
-     */
-    public static final int MODE_UNSPECIFIED = 2 << MODE_SHIFT;
+    public static final int MODE_AD_MOST = 2 << MODE_SHIFT;
+
 
     public static int make(int size, int mode) {
 

@@ -10,6 +10,10 @@ public class AndroidPaint extends SLPaint {
     private Paint mPaint = new TextPaint();
 
     public AndroidPaint() {
+        init();
+    }
+
+    private void init() {
         mPaint.setAntiAlias(true);
     }
 
@@ -46,6 +50,38 @@ public class AndroidPaint extends SLPaint {
     @Override
     public int getColor() {
         return mPaint.getColor();
+    }
+
+    @Override
+    public void setStyle(Style style) {
+        switch (style) {
+            case FILL:
+                mPaint.setStyle(Paint.Style.FILL);
+                break;
+            case STROKE:
+                mPaint.setStyle(Paint.Style.STROKE);
+                break;
+            case FILL_AND_STROKE:
+                mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+                break;
+        }
+
+    }
+
+    @Override
+    public float getStrokeWidth() {
+        return mPaint.getStrokeWidth();
+    }
+
+    @Override
+    public void reset() {
+        mPaint.reset();
+        init();
+    }
+
+    @Override
+    public void setStrokeWidth(float strokeWidth) {
+        mPaint.setStrokeWidth(strokeWidth);
     }
 
     public Paint getPaint() {

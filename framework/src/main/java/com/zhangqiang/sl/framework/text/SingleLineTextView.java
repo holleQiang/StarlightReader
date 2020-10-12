@@ -11,7 +11,7 @@ public class SingleLineTextView extends SLView {
     private static final String TAG = SingleLineTextView.class.getCanonicalName();
     private SLPaint mPaint;
     private CharSequence mText;
-    private float mLineHeightMultiple = 1.2f;
+    private float mLineHeightMultiple = 1f;
 
     public SingleLineTextView(SLContext context) {
         super(context);
@@ -108,5 +108,9 @@ public class SingleLineTextView extends SLView {
             this.mLineHeightMultiple = lineHeightMultiple;
             requestLayout();
         }
+    }
+
+    public int getTextColor() {
+        return mPaint.getColor();
     }
 }

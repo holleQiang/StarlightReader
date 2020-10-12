@@ -62,4 +62,14 @@ public class JavaCanvas extends SLCanvas {
     public void setImage(SLImage image) {
 
     }
+
+    @Override
+    public void drawRect(SLRect rect, SLPaint paint) {
+
+    }
+
+    @Override
+    public void drawRoundRect() {
+
+    }
 }

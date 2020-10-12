@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.text.TextPaint;
 
 
@@ -103,6 +104,14 @@ public class AndroidCanvas extends AndroidBasicCanvas {
         canvas.drawRect(rect, paint);
     }
 
+    @Override
+    public void drawRoundRect(float left, float top, float right, float bottom, float rx, float ry, SLPaint paint) {
+        RectFRecord rectFRecord = RectFRecord.obtain();
+        rectFRecord.rect.set(left, top, right, bottom);
+        canvas.drawRoundRect(rectFRecord.rect, rx, ry, ((AndroidPaint) paint).getPaint());
+        rectFRecord.recycle();
+    }
+
     public Canvas getCanvas() {
         return canvas;
     }
@@ -122,6 +131,32 @@ public class AndroidCanvas extends AndroidBasicCanvas {
                 return new RectRecord();
             }
             RectRecord result = sPool;
+            sPool = sPool.next;
+            result.next = null;
+            return result;
+        }
+
+        void recycle() {
+            next = sPool;
+            sPool = this;
+        }
+    }
+
+
+    private static class RectFRecord {
+
+        private final RectF rect = new RectF();
+        private RectFRecord next;
+        private static RectFRecord sPool;
+
+        private RectFRecord() {
+        }
+
+        static RectFRecord obtain() {
+            if (sPool == null) {
+                return new RectFRecord();
+            }
+            RectFRecord result = sPool;
             sPool = sPool.next;
             result.next = null;
             return result;

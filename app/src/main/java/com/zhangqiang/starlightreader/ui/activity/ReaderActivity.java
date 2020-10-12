@@ -1,5 +1,11 @@
 package com.zhangqiang.starlightreader.ui.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -93,6 +99,59 @@ public class ReaderActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerBatterChangeReceiver();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unRegisterBatteryChangeReceiver();
+    }
+
+    private void registerBatterChangeReceiver() {
+
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(mBatterChangeReceiver, intentFilter);
+    }
+
+    private void unRegisterBatteryChangeReceiver() {
+        unregisterReceiver(mBatterChangeReceiver);
+    }
+
+    private final BroadcastReceiver mBatterChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mAdapter != null) {
+                mAdapter.setBottomBarBattery(getBatteryLevelFromIntent(intent));
+            }
+        }
+    };
+
+    private float getBatteryLevelFromIntent(Intent intent) {
+        float current = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+        int count = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
+        return current / count;
+    }
+
+    private float getBatteryLevel() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+            return (float) batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) / 100;
+        } else {
+            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent intent = registerReceiver(null, intentFilter);
+            if (intent == null) {
+                return 0;
+            }
+            return getBatteryLevelFromIntent(intent);
+        }
+    }
+
     private void loadBook(String charset) {
         mBook = null;
         BookModel.parseBook(bookPath, charset).compose(RxJavaUtils.applyIOMainSchedules())
@@ -107,7 +166,7 @@ public class ReaderActivity extends BaseActivity {
                             List<Chapter> chapters = ((TxtBook) book).getChapters();
                             mChapterAdapter.setDataList(makeChapterCellList(chapters));
                             int chapterCount = chapters == null ? 0 : chapters.size();
-                            tvChapterListLabel.setText(String.format(Locale.getDefault(),getResources().getString(R.string.chapter_list_number),chapterCount));
+                            tvChapterListLabel.setText(String.format(Locale.getDefault(), getResources().getString(R.string.chapter_list_number), chapterCount));
                         }
 
                         mCoverLayout.post(new Runnable() {
@@ -136,13 +195,25 @@ public class ReaderActivity extends BaseActivity {
         });
         mAdapter.setTextColor(ReadSettingsModel.getTxtColor());
         mAdapter.setTextSize(ViewUtils.spToPx(ReaderActivity.this, ReadSettingsModel.getTxtSize()));
-        int hPadding = ViewUtils.dpToPx(this,16);
-        int vPadding = ViewUtils.dpToPx(this,10);
-        mAdapter.setContentPadding(hPadding,0,hPadding,vPadding);
-        mAdapter.setTopBarPadding(hPadding,vPadding,hPadding,vPadding);
+        int hPadding = ViewUtils.dpToPx(this, 16);
+        int vPadding = ViewUtils.dpToPx(this, 10);
+        mAdapter.setContentPadding(hPadding, 0, hPadding, 0);
+        mAdapter.setTopBarPadding(hPadding, vPadding, hPadding, vPadding);
         mAdapter.setTopBarTextColor(0xff666666);
-        mAdapter.setParagraphSpace(ViewUtils.dpToPx(this,5));
-        mAdapter.setTopBarTextSize(ViewUtils.spToPx(this,15));
+        mAdapter.setParagraphSpace(ViewUtils.dpToPx(this, 5));
+        mAdapter.setTopBarTextSize(ViewUtils.spToPx(this, 15));
+        mAdapter.setLineHeightMultiple(1.2f);
+        mAdapter.setBottomBarPadding(hPadding, vPadding, hPadding, vPadding);
+        mAdapter.setBottomBarTextColor(0xff666666);
+        mAdapter.setBottomBarTextSize(ViewUtils.spToPx(this, 15));
+        mAdapter.setBottomBarDatePaddingLeft(ViewUtils.dpToPx(this, 5));
+        mAdapter.setBottomBarBattery(getBatteryLevel());
+        mAdapter.setBottomBarBatteryColor(0xff666666);
+        mAdapter.setBottomBarBatteryBodyBorderWidth(ViewUtils.dpToPx(this,2));
+        mAdapter.setBottomBarBatteryHeaderWidth(ViewUtils.dpToPx(this,2));
+        mAdapter.setBottomBarBatteryHeaderHeight(ViewUtils.dpToPx(this,5));
+        mAdapter.setBottomBarBatteryBodyWidth(ViewUtils.dpToPx(this,18));
+        mAdapter.setBottomBarBatteryBodyHeight(ViewUtils.dpToPx(this,12));
         mCoverLayout.setAdapter(mAdapter);
     }
 

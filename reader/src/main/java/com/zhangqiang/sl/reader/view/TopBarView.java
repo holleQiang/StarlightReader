@@ -1,89 +1,62 @@
 package com.zhangqiang.sl.reader.view;
 
 import com.zhangqiang.sl.framework.context.SLContext;
-import com.zhangqiang.sl.framework.graphic.SLCanvas;
-import com.zhangqiang.sl.framework.graphic.SLPaint;
-import com.zhangqiang.sl.framework.view.MeasureOptions;
+import com.zhangqiang.sl.framework.layout.SLLinearLayout;
+import com.zhangqiang.sl.framework.text.SingleLineTextView;
+import com.zhangqiang.sl.framework.view.Gravity;
 import com.zhangqiang.sl.framework.view.SLView;
+import com.zhangqiang.sl.framework.view.SLViewGroup;
 
-public class TopBarView extends SLView {
+public class TopBarView extends SLLinearLayout {
 
-    private String bookName;
-    private String chapterName;
-    private SLPaint mPaint;
+    private final SingleLineTextView bookNameView;
+    private final SingleLineTextView chapterNameView;
 
     public TopBarView(SLContext context) {
         super(context);
-        mPaint = context.newPaint();
-    }
+        setOrientation(ORIENTATION_HORIZONTAL);
+        bookNameView = new SingleLineTextView(context);
+        LayoutParams bookNameLayoutParams = new LayoutParams(SLViewGroup.LayoutParams.SIZE_WRAP_CONTENT, SLViewGroup.LayoutParams.SIZE_WRAP_CONTENT);
+        bookNameLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+        bookNameView.setLayoutParams(bookNameLayoutParams);
+        addView(bookNameView);
 
-    @Override
-    protected void onMeasure(int widthOptions, int heightOptions) {
-        super.onMeasure(widthOptions, heightOptions);
-        setMeasuredResult(resolveSizeAndState(MeasureOptions.getSize(widthOptions), widthOptions),
-                resolveSizeAndState((int) Math.ceil(mPaint.getTextHeight() + getPaddingTop() + getPaddingBottom()), heightOptions));
-    }
+        SLView emptyView = new SLView(context);
+        LayoutParams emptyLayoutParams = new LayoutParams(0, 0);
+        emptyLayoutParams.weight = 1;
+        emptyView.setLayoutParams(emptyLayoutParams);
+        addView(emptyView);
 
-    @Override
-    protected void onDraw(SLCanvas canvas) {
-        super.onDraw(canvas);
-        float topOffset = ((getHeight() - getPaddingTop() - getPaddingBottom()) - mPaint.getTextHeight()) / 2 + getPaddingTop();
-        int save = canvas.save();
-        canvas.translate(0, topOffset);
-        if (bookName != null && bookName.length() > 0) {
-            canvas.drawText(bookName, 0, bookName.length(), getPaddingLeft(), -mPaint.ascent(), mPaint);
-        }
-        if (chapterName != null && chapterName.length() > 0) {
-            int length = chapterName.length();
-            float chapterWidth = mPaint.measureText(chapterName, 0, length);
-            canvas.drawText(chapterName, 0, chapterName.length(), getWidth() - getPaddingRight() - chapterWidth, -mPaint.ascent(), mPaint);
-        }
-        canvas.restoreToCount(save);
+        chapterNameView = new SingleLineTextView(context);
+        LayoutParams chapterNameLayoutParams = new LayoutParams(SLViewGroup.LayoutParams.SIZE_WRAP_CONTENT, SLViewGroup.LayoutParams.SIZE_WRAP_CONTENT);
+        chapterNameLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+        chapterNameView.setLayoutParams(chapterNameLayoutParams);
+        addView(chapterNameView);
     }
 
     public float getTextSize() {
-        return mPaint.getTextSize();
+        return bookNameView.getTextSize();
     }
 
     public void setTextSize(float textSize) {
-        if (this.mPaint.getTextSize() != textSize) {
-            mPaint.setTextSize(textSize);
-            requestLayout();
-        }
+        bookNameView.setTextSize(textSize);
+        chapterNameView.setTextSize(textSize);
     }
 
-    public float getTextColor() {
-        return mPaint.getColor();
+    public int getTextColor() {
+        return bookNameView.getTextColor();
     }
 
     public void setTextColor(int textColor) {
-        if (this.mPaint.getColor() != textColor) {
-            this.mPaint.setColor(textColor);
-            invalidate();
-        }
-    }
-
-    public String getBookName() {
-        return bookName;
+        bookNameView.setTextColor(textColor);
+        chapterNameView.setTextColor(textColor);
     }
 
     public void setBookName(String bookName) {
-        if (this.bookName == null && bookName != null
-                || this.bookName != null && !this.bookName.equals(bookName)) {
-            this.bookName = bookName;
-            requestLayout();
-        }
-    }
-
-    public String getChapterName() {
-        return chapterName;
+        bookNameView.setText(bookName);
     }
 
     public void setChapterName(String chapterName) {
-        if (this.chapterName == null && chapterName != null
-                || this.chapterName != null && !this.chapterName.equals(chapterName)) {
-            this.chapterName = chapterName;
-            requestLayout();
-        }
+        chapterNameView.setText(chapterName);
     }
 }

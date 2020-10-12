@@ -89,6 +89,11 @@ public class AndroidGLCanvas extends AndroidBasicCanvas {
 
     }
 
+    @Override
+    public void drawRoundRect(float left, float top, float right, float bottom, float rx, float ry, SLPaint paint) {
+
+    }
+
     public void setCanvasGL(ICanvasGL canvasGL) {
         this.canvasGL = canvasGL;
     }

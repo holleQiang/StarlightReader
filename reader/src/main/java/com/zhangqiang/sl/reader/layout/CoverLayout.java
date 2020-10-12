@@ -494,7 +494,9 @@ public class CoverLayout extends SLViewGroup {
             addViewInLayout(view, 0);
         }
         if (needToMeasure) {
-            measureChild(view, getWidth(), MeasureOptions.MODE_EXACTLY, getHeight(), MeasureOptions.MODE_EXACTLY);
+            int widthMeasureOptions = MeasureOptions.make(getWidth(), MeasureOptions.MODE_EXACTLY);
+            int heightMeasureOptions = MeasureOptions.make(getHeight(), MeasureOptions.MODE_EXACTLY);
+            measureChild(widthMeasureOptions, heightMeasureOptions,view);
             view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         }
     }
@@ -516,6 +518,11 @@ public class CoverLayout extends SLViewGroup {
             this.view = view;
             this.scroller = scroller;
         }
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(LayoutParams.SIZE_MATCH_PARENT,LayoutParams.SIZE_MATCH_PARENT);
     }
 
     @Override

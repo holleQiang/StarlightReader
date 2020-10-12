@@ -15,4 +15,19 @@ public abstract class SLPaint {
     public abstract void setColor(int color);
 
     public abstract int getColor();
+
+    public abstract void setStyle(Style style);
+
+    public abstract float getStrokeWidth();
+
+    public abstract void reset();
+
+    public abstract void setStrokeWidth(float strokeWidth);
+
+    public enum Style {
+
+        STROKE,
+        FILL,
+        FILL_AND_STROKE
+    }
 }

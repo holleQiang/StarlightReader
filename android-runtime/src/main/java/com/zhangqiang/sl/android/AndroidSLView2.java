@@ -30,7 +30,7 @@ public class AndroidSLView2 extends View implements ISLView {
     private SLViewRoot mViewRoot;
     private SLView mTempContentView;
     private SLRootView mRootView;
-    private final List<Runnable> mRunnableList = new ArrayList<>();
+    private boolean hasPendingInvalidateRequest;
 
     public AndroidSLView2(Context context) {
         super(context);
@@ -61,13 +61,13 @@ public class AndroidSLView2 extends View implements ISLView {
 
                     @Override
                     protected void onPostFrameCallback(Runnable runnable) {
-                        mRunnableList.add(runnable);
                         postInvalidate();
+                        hasPendingInvalidateRequest = true;
                     }
 
                     @Override
                     protected void onRemoveFrameCallback(Runnable runnable) {
-                        mRunnableList.remove(runnable);
+                        hasPendingInvalidateRequest = false;
                     }
                 };
             }
@@ -84,16 +84,11 @@ public class AndroidSLView2 extends View implements ISLView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        int size = mRunnableList.size();
-        if (size > 0) {
-            ((ViewRenderBuffer) mViewRoot.getRenderBuffer()).setCanvas(canvas);
-            for (int i = size - 1; i >= 0; i--) {
-                mRunnableList.get(i).run();
-                mRunnableList.remove(i);
-            }
-        }else {
-            mViewRoot.scheduleTraversal();
+        ((ViewRenderBuffer) mViewRoot.getRenderBuffer()).setCanvas(canvas);
+        mViewRoot.doTraversal();
+        if (hasPendingInvalidateRequest) {
+            postInvalidate();
+            hasPendingInvalidateRequest = false;
         }
     }
 

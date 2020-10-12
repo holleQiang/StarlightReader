@@ -78,7 +78,14 @@ public class SLViewRoot implements SLViewParent {
         }
     }
 
-    private void doTraversal() {
+    public void doTraversal() {
+
+        mScheduleTraversal = false;
+
+        long currentTimeMillis = System.currentTimeMillis();
+        if (debug) {
+            logI("开始遍历");
+        }
 
         if (mAttachInfo == null) {
             mAttachInfo = new SLAttachInfo(this);
@@ -93,6 +100,10 @@ public class SLViewRoot implements SLViewParent {
             doTraversalLayout();
         }
         doTraversalDraw();
+
+        if (debug) {
+            logI("遍历完成:" + (System.currentTimeMillis() - currentTimeMillis));
+        }
     }
 
     @Override
@@ -191,20 +202,14 @@ public class SLViewRoot implements SLViewParent {
         }
     };
 
-    protected void performTraversal() {
+    private void performTraversal() {
 
         if (!mScheduleTraversal) {
             return;
         }
-        mScheduleTraversal = false;
-        long currentTimeMillis = System.currentTimeMillis();
-        if (debug) {
-            logI("开始遍历");
-        }
+
         doTraversal();
-        if (debug) {
-            logI("遍历完成:" + (System.currentTimeMillis() - currentTimeMillis));
-        }
+
     }
 
     public void dispatchTouchEvent(SLMotionEvent motionEvent) {

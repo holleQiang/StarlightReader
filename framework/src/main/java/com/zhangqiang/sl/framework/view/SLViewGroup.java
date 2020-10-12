@@ -285,93 +285,82 @@ public abstract class SLViewGroup extends SLView implements SLViewParent {
         public static final int SIZE_WRAP_CONTENT = -1;
         public static final int SIZE_MATCH_PARENT = -2;
 
-        private int width;
-        private int height;
+        public int width;
+        public int height;
 
         public LayoutParams(int width, int height) {
             this.width = width;
             this.height = height;
         }
 
-        public int getWidth() {
-            return width;
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
     }
 
     protected LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(LayoutParams.SIZE_WRAP_CONTENT, LayoutParams.SIZE_WRAP_CONTENT);
     }
 
-    protected static void measureChild(int widthOptions, int heightOptions, SLView child) {
+    protected  void measureChild(int widthOptions, int heightOptions, SLView child) {
         measureChild(widthOptions, 0, heightOptions, 0, child);
     }
 
-    protected static void measureChild(SLView child, int width, int widthMode, int height, int heightMode) {
-        measureChild(MeasureOptions.make(width, widthMode), MeasureOptions.make(height, heightMode), child);
-    }
-
-    protected static void measureChild(int widthOptions, int widthUsed, int heightOptions, int heightUsed, SLView child) {
+    protected void measureChild(int widthOptions, int widthUsed, int heightOptions, int heightUsed, SLView child) {
         LayoutParams layoutParams = child.getLayoutParams();
-        child.measure(makeChildMeasureOptions(widthOptions, widthUsed, layoutParams.width),
-                makeChildMeasureOptions(heightOptions, heightUsed, layoutParams.height));
+        child.measure(makeChildMeasureOptions(widthOptions, getPaddingLeft() + getPaddingRight() + widthUsed, layoutParams.width),
+                makeChildMeasureOptions(heightOptions, getPaddingTop() + getPaddingBottom() + heightUsed, layoutParams.height));
     }
 
-    private static int makeChildMeasureOptions(int options, int sizeUsed, int layoutSize) {
+    protected static int makeChildMeasureOptions(int options, int padding, int childDimension) {
 
-        int resultMode;
-        int resultSize;
-        int mode = MeasureOptions.getMode(options);
-        int size = MeasureOptions.getSize(options) - sizeUsed;
-        if (mode == MeasureOptions.MODE_AD_MOST) {
+        int optionsMode = MeasureOptions.getMode(options);
+        int optionsSize = MeasureOptions.getSize(options);
+        int size = Math.max(0, optionsSize - padding);
 
-            if (layoutSize == LayoutParams.SIZE_WRAP_CONTENT) {
+        int resultMode = MeasureOptions.MODE_UNSPECIFIED;
+        int resultSize = 0;
+        if (optionsMode == MeasureOptions.MODE_AD_MOST) {
+
+            if (childDimension == LayoutParams.SIZE_WRAP_CONTENT) {
                 resultSize = size;
                 resultMode = MeasureOptions.MODE_AD_MOST;
-            } else if (layoutSize == LayoutParams.SIZE_MATCH_PARENT) {
+            } else if (childDimension == LayoutParams.SIZE_MATCH_PARENT) {
                 resultSize = size;
                 resultMode = MeasureOptions.MODE_AD_MOST;
             } else {
-                resultSize = layoutSize;
-                resultMode = MeasureOptions.MODE_EXACTLY;
+                if (childDimension >= 0) {
+                    resultSize = childDimension;
+                    resultMode = MeasureOptions.MODE_EXACTLY;
+                }
             }
-        } else if (mode == MeasureOptions.MODE_EXACTLY) {
+        } else if (optionsMode == MeasureOptions.MODE_EXACTLY) {
 
-            if (layoutSize == LayoutParams.SIZE_WRAP_CONTENT) {
+            if (childDimension == LayoutParams.SIZE_WRAP_CONTENT) {
                 resultSize = size;
                 resultMode = MeasureOptions.MODE_AD_MOST;
-            } else if (layoutSize == LayoutParams.SIZE_MATCH_PARENT) {
+            } else if (childDimension == LayoutParams.SIZE_MATCH_PARENT) {
                 resultSize = size;
                 resultMode = MeasureOptions.MODE_EXACTLY;
             } else {
-                resultSize = layoutSize;
-                resultMode = MeasureOptions.MODE_EXACTLY;
+                if (childDimension >= 0) {
+                    resultSize = childDimension;
+                    resultMode = MeasureOptions.MODE_EXACTLY;
+                }
             }
-        } else if (mode == MeasureOptions.MODE_UNSPECIFIED) {
+        } else if (optionsMode == MeasureOptions.MODE_UNSPECIFIED) {
 
-            if (layoutSize == LayoutParams.SIZE_WRAP_CONTENT) {
+            if (childDimension == LayoutParams.SIZE_WRAP_CONTENT) {
                 resultSize = size;
                 resultMode = MeasureOptions.MODE_UNSPECIFIED;
-            } else if (layoutSize == LayoutParams.SIZE_MATCH_PARENT) {
+            } else if (childDimension == LayoutParams.SIZE_MATCH_PARENT) {
                 resultSize = size;
                 resultMode = MeasureOptions.MODE_UNSPECIFIED;
             } else {
-                resultSize = layoutSize;
-                resultMode = MeasureOptions.MODE_EXACTLY;
+                if (childDimension >= 0) {
+                    resultSize = childDimension;
+                    resultMode = MeasureOptions.MODE_EXACTLY;
+                }
             }
         } else {
-            throw new IllegalArgumentException("unknown mode:" + mode);
+            throw new IllegalArgumentException("unknown optionsMode:" + optionsMode);
         }
         return MeasureOptions.make(resultSize, resultMode);
     }

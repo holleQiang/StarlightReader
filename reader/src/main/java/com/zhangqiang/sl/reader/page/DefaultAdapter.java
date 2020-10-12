@@ -12,8 +12,9 @@ public class DefaultAdapter extends PageViewAdapter {
 
     public static final int ITEM_TYPE_TEXT = 0;
     public static final int ITEM_TYPE_IMAGE = 1;
-    private float textSize = 50;
-    private int textColor = 0xff000000;
+    private float mTextSize = 50;
+    private int mTextColor = 0xff000000;
+    private float mLineHeightMultiple = 1f;
 
     @Override
     public int getItemType(Element element) {
@@ -36,9 +37,9 @@ public class DefaultAdapter extends PageViewAdapter {
             }
 
             textView.setText(((TextElement) element).getText());
-            textView.setTextSize(textSize);
-            textView.setTextColor(textColor);
-//            textView.setDrawingCacheEnable(true);
+            textView.setTextSize(mTextSize);
+            textView.setTextColor(mTextColor);
+            textView.setLineHeightMultiple(mLineHeightMultiple);
             return textView;
         } else if (itemType == ITEM_TYPE_IMAGE) {
             SLImageView imageView;
@@ -55,18 +56,23 @@ public class DefaultAdapter extends PageViewAdapter {
     }
 
     public void setTextSize(float textSize) {
-        if (this.textSize != textSize) {
-            this.textSize = textSize;
+        if (this.mTextSize != textSize) {
+            this.mTextSize = textSize;
             notifyDataChanged();
         }
     }
 
     public void setTextColor(int textColor) {
-        if (this.textColor != textColor) {
-            this.textColor = textColor;
+        if (this.mTextColor != textColor) {
+            this.mTextColor = textColor;
             notifyDataChanged();
         }
     }
 
-
+    public void setLineHeightMultiple(float lineHeightMultiple) {
+        if (mLineHeightMultiple != lineHeightMultiple) {
+            this.mLineHeightMultiple = lineHeightMultiple;
+            notifyDataChanged();
+        }
+    }
 }
