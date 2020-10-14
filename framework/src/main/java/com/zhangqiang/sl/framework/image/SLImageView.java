@@ -2,7 +2,6 @@ package com.zhangqiang.sl.framework.image;
 
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
-import com.zhangqiang.sl.framework.view.MeasureOptions;
 import com.zhangqiang.sl.framework.view.SLView;
 
 public class SLImageView extends SLView {
@@ -16,8 +15,8 @@ public class SLImageView extends SLView {
     @Override
     protected void onMeasure(int widthOptions, int heightOptions) {
         super.onMeasure(widthOptions, heightOptions);
-        int width = imageDrawable == null ? 0 : imageDrawable.getWidth();
-        int height = imageDrawable == null ? 0 : imageDrawable.getHeight();
+        int width = imageDrawable == null ? 0 : imageDrawable.getIntrinsicWidth();
+        int height = imageDrawable == null ? 0 : imageDrawable.getIntrinsicHeight();
         setMeasuredResult(resolveSizeAndState(width, widthOptions), resolveSizeAndState(height, heightOptions));
     }
 

@@ -16,12 +16,12 @@ public class SLImageDrawable extends SLDrawable {
     }
 
     @Override
-    public int getWidth() {
+    public int getIntrinsicWidth() {
         return image.getWidth();
     }
 
     @Override
-    public int getHeight() {
+    public int getIntrinsicHeight() {
         return image.getHeight();
     }
 

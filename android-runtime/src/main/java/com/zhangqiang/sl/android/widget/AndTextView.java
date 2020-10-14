@@ -5,7 +5,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 
 import com.zhangqiang.sl.android.render.canvas.AndroidCanvas;
-import com.zhangqiang.sl.android.AndroidPaint;
+import com.zhangqiang.sl.android.graphic.AndroidPaint;
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;

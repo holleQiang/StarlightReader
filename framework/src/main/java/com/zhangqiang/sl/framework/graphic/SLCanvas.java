@@ -31,4 +31,6 @@ public abstract class SLCanvas {
     public abstract void drawRect(SLRect rect, SLPaint paint);
 
     public abstract void drawRoundRect(float left, float top, float right, float bottom, float rx, float ry, SLPaint paint);
+
+    public abstract void drawPath(SLPath path,SLPaint paint);
 }

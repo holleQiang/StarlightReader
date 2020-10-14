@@ -1,4 +1,4 @@
-package com.zhangqiang.sl.android;
+package com.zhangqiang.sl.android.graphic;
 
 import android.graphics.Paint;
 import android.text.TextPaint;

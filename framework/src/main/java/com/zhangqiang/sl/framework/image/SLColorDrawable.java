@@ -17,6 +17,7 @@ public class SLColorDrawable extends SLDrawable {
 
     @Override
     public boolean isOpaque() {
-        return (color >>> 24) == 255;
+        return (color >>> 24) == 0xff;
     }
+
 }

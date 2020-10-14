@@ -32,7 +32,7 @@ public class AndroidImage extends SLImage {
     @Override
     public void recycle() {
 //        bitmap.recycle();
-//        BitmapPool.remove(bitmap.getWidth(),bitmap.getHeight(),bitmap.getConfig());
+//        BitmapPool.remove(bitmap.getIntrinsicWidth(),bitmap.getIntrinsicHeight(),bitmap.getConfig());
         BitmapPool.put(bitmap);
     }
 

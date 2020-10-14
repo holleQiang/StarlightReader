@@ -2,19 +2,16 @@ package com.zhangqiang.sl.android.render.canvas;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextPaint;
 
 
-import com.zhangqiang.sl.android.AndroidPaint;
+import com.zhangqiang.sl.android.graphic.AndroidPaint;
+import com.zhangqiang.sl.android.graphic.AndroidPath;
 import com.zhangqiang.sl.android.image.AndroidImage;
-import com.zhangqiang.sl.framework.graphic.SLRect;
-import com.zhangqiang.sl.framework.graphic.SLCanvas;
+import com.zhangqiang.sl.framework.graphic.SLPath;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
 import com.zhangqiang.sl.framework.image.SLImage;
 
@@ -112,59 +109,13 @@ public class AndroidCanvas extends AndroidBasicCanvas {
         rectFRecord.recycle();
     }
 
+    @Override
+    public void drawPath(SLPath path, SLPaint paint) {
+        canvas.drawPath(((AndroidPath) path).getPath(), ((AndroidPaint) paint).getPaint());
+    }
+
     public Canvas getCanvas() {
         return canvas;
     }
 
-
-    private static class RectRecord {
-
-        private final Rect rect = new Rect();
-        private RectRecord next;
-        private static RectRecord sPool;
-
-        private RectRecord() {
-        }
-
-        static RectRecord obtain() {
-            if (sPool == null) {
-                return new RectRecord();
-            }
-            RectRecord result = sPool;
-            sPool = sPool.next;
-            result.next = null;
-            return result;
-        }
-
-        void recycle() {
-            next = sPool;
-            sPool = this;
-        }
-    }
-
-
-    private static class RectFRecord {
-
-        private final RectF rect = new RectF();
-        private RectFRecord next;
-        private static RectFRecord sPool;
-
-        private RectFRecord() {
-        }
-
-        static RectFRecord obtain() {
-            if (sPool == null) {
-                return new RectFRecord();
-            }
-            RectFRecord result = sPool;
-            sPool = sPool.next;
-            result.next = null;
-            return result;
-        }
-
-        void recycle() {
-            next = sPool;
-            sPool = this;
-        }
-    }
 }

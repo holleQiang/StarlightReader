@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.zhangqiang.sl.android.AndroidPaint;
+import com.zhangqiang.sl.android.graphic.AndroidPaint;
 import com.zhangqiang.sl.android.image.AndroidImage;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
@@ -83,29 +83,4 @@ public abstract class AndroidBasicCanvas extends SLCanvas {
     }
 
     protected abstract void onDrawRect(Rect rect, Paint paint);
-
-    static class RectRecord {
-
-        final Rect rect = new Rect();
-        private RectRecord next;
-        private static RectRecord sPool;
-
-        private RectRecord() {
-        }
-
-        static RectRecord obtain() {
-            if (sPool == null) {
-                return new RectRecord();
-            }
-            RectRecord result = sPool;
-            sPool = sPool.next;
-            result.next = null;
-            return result;
-        }
-
-        void recycle() {
-            next = sPool;
-            sPool = this;
-        }
-    }
 }

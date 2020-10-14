@@ -482,8 +482,8 @@ public class SLView {
             return;
         }
         boolean requestLayout = mBackground == null
-                || mBackground.getWidth() != background.getWidth()
-                || mBackground.getHeight() != background.getHeight();
+                || mBackground.getIntrinsicWidth() != background.getIntrinsicWidth()
+                || mBackground.getIntrinsicHeight() != background.getIntrinsicHeight();
 
         this.mBackground = background;
 

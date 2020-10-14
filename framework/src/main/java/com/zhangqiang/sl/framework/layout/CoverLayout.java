@@ -1,9 +1,11 @@
-package com.zhangqiang.sl.reader.layout;
+package com.zhangqiang.sl.framework.layout;
 
-import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.animation.SLScroller;
+import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.gesture.SLMotionEvent;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
+import com.zhangqiang.sl.framework.graphic.SLRect;
+import com.zhangqiang.sl.framework.image.SLDrawable;
 import com.zhangqiang.sl.framework.view.MeasureOptions;
 import com.zhangqiang.sl.framework.view.SLView;
 import com.zhangqiang.sl.framework.view.SLViewGroup;
@@ -25,7 +27,7 @@ public class CoverLayout extends SLViewGroup {
     private int mDragDirection;
     private boolean mInLayout;
     private boolean mLayoutBlocked;
-    private CoverLayoutAdapter mAdapter;
+    private Adapter mAdapter;
     private RecycleBin mRecycleBin;
     private SLView mTouchView;
     private final List<ScrollItem> mActiveScrollItems = new ArrayList<>();
@@ -34,6 +36,8 @@ public class CoverLayout extends SLViewGroup {
     private int mDragIntent;
     private OnPageChangeListener onPageChangeListener;
     private boolean mDataChanged;
+    private SLDrawable mLeftShadowDrawable;
+    private SLDrawable mRightShadowDrawable;
 
     public CoverLayout(SLContext context) {
         super(context);
@@ -116,21 +120,46 @@ public class CoverLayout extends SLViewGroup {
             }
             int left = tempChild.getLeft();
             if (left < 0) {
-                clipLeft = tempChild.getRight();
-                clipRight = getWidth();
+                clipLeft = Math.max(clipLeft, tempChild.getRight());
+                clipRight = Math.min(clipRight, getWidth());
             } else if (left > 0) {
-                clipLeft = 0;
-                clipRight = tempChild.getLeft();
+                clipLeft = Math.max(clipLeft, 0);
+                clipRight = Math.min(clipRight, tempChild.getLeft());
             } else {
                 return;
             }
+        }
+        if (clipLeft >= clipRight) {
+            return;
         }
 
         int save = canvas.save();
         canvas.clipRect(clipLeft, 0, clipRight, child.getHeight());
         super.drawChild(canvas, child, viewGroup);
         canvas.restoreToCount(save);
+        int left = child.getLeft();
+        if (left > 0) {
+            if (mLeftShadowDrawable != null) {
+                SLRect bounds = mLeftShadowDrawable.getBounds();
+                mLeftShadowDrawable.setBounds(left - bounds.getWidth(), 0, left, getHeight());
+                int saveIndex = canvas.save();
+                canvas.clipRect(0, 0, left, getHeight());
+                mLeftShadowDrawable.draw(canvas);
+                canvas.restoreToCount(saveIndex);
+            }
+        }
+        int right = child.getRight();
+        if (right < getWidth()) {
 
+            if (mRightShadowDrawable != null) {
+                SLRect bounds = mRightShadowDrawable.getBounds();
+                mRightShadowDrawable.setBounds(right, 0, right + bounds.getWidth(), getHeight());
+                int saveIndex = canvas.save();
+                canvas.clipRect(right, 0, getWidth(), getHeight());
+                mRightShadowDrawable.draw(canvas);
+                canvas.restoreToCount(saveIndex);
+            }
+        }
     }
 
     private void processDragIdentify(int currX, int currY) {
@@ -201,7 +230,7 @@ public class CoverLayout extends SLViewGroup {
                                 notifyPageChanged();
                             }
                         }
-                    }else {
+                    } else {
                         notifyPageClicked();
                     }
                 } else {
@@ -315,10 +344,24 @@ public class CoverLayout extends SLViewGroup {
         }
         if (mActiveScrollItems.size() > 0) {
             invalidate();
+        } else {
+            boolean covered = false;
+            int childCount = getChildCount();
+            for (int index = childCount - 1; index >= 0; index--) {
+                SLView child = getChildAt(index);
+                if (!covered && child.getLeft() == 0) {
+                    covered = true;
+                    continue;
+                }
+                if (covered) {
+                    removeViewInLayout(child);
+                    mRecycleBin.addScrapView(child);
+                }
+            }
         }
     }
 
-    public void setAdapter(CoverLayoutAdapter adapter) {
+    public void setAdapter(Adapter adapter) {
         mRecycleBin.clear();
         removeAllViewsInLayout();
         abortAnimations();
@@ -333,7 +376,7 @@ public class CoverLayout extends SLViewGroup {
         requestLayout();
     }
 
-    private final CoverLayoutAdapter.Observer mObserver = new CoverLayoutAdapter.Observer() {
+    private final Adapter.Observer mObserver = new Adapter.Observer() {
         @Override
         public void onDataChanged() {
             mDataChanged = true;
@@ -359,7 +402,7 @@ public class CoverLayout extends SLViewGroup {
             }
         }
 
-        public SLView getActiveView(SLView child) {
+        SLView getActiveView(SLView child) {
             if (mActiveView == null) {
                 return null;
             }
@@ -496,7 +539,7 @@ public class CoverLayout extends SLViewGroup {
         if (needToMeasure) {
             int widthMeasureOptions = MeasureOptions.make(getWidth(), MeasureOptions.MODE_EXACTLY);
             int heightMeasureOptions = MeasureOptions.make(getHeight(), MeasureOptions.MODE_EXACTLY);
-            measureChild(widthMeasureOptions, heightMeasureOptions,view);
+            measureChild(widthMeasureOptions, heightMeasureOptions, view);
             view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         }
     }
@@ -522,7 +565,7 @@ public class CoverLayout extends SLViewGroup {
 
     @Override
     protected LayoutParams generateDefaultLayoutParams() {
-        return new LayoutParams(LayoutParams.SIZE_MATCH_PARENT,LayoutParams.SIZE_MATCH_PARENT);
+        return new LayoutParams(LayoutParams.SIZE_MATCH_PARENT, LayoutParams.SIZE_MATCH_PARENT);
     }
 
     @Override
@@ -538,7 +581,7 @@ public class CoverLayout extends SLViewGroup {
         mActiveScrollItems.clear();
     }
 
-    public interface OnPageChangeListener{
+    public interface OnPageChangeListener {
 
         void onPageChange(SLView view);
 
@@ -547,5 +590,49 @@ public class CoverLayout extends SLViewGroup {
 
     public void setOnPageChangeListener(OnPageChangeListener onPageChangeListener) {
         this.onPageChangeListener = onPageChangeListener;
+    }
+
+
+    public static abstract class Adapter {
+
+        private List<Observer> observers = new ArrayList<>();
+
+        public abstract SLView getView(SLViewGroup parent, SLView prevView, SLView convertView, int intent);
+
+        public interface Observer {
+
+            void onDataChanged();
+        }
+
+        public void registerObserver(Observer observer) {
+            if (observers.contains(observer)) {
+                return;
+            }
+            observers.add(observer);
+        }
+
+        public void unRegisterObserver(Observer observer) {
+            observers.remove(observer);
+        }
+
+        protected void notifyDataChanged() {
+            for (int i = observers.size() - 1; i >= 0; i--) {
+                observers.get(i).onDataChanged();
+            }
+        }
+    }
+
+    public void setLeftShadowDrawable(SLDrawable leftShadowDrawable) {
+        if (mLeftShadowDrawable != leftShadowDrawable) {
+            this.mLeftShadowDrawable = leftShadowDrawable;
+            invalidate();
+        }
+    }
+
+    public void setRightShadowDrawable(SLDrawable rightShadowDrawable) {
+        if (mRightShadowDrawable != rightShadowDrawable) {
+            this.mRightShadowDrawable = rightShadowDrawable;
+            invalidate();
+        }
     }
 }

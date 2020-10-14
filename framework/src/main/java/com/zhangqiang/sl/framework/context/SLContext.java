@@ -2,6 +2,7 @@ package com.zhangqiang.sl.framework.context;
 
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
+import com.zhangqiang.sl.framework.graphic.SLPath;
 import com.zhangqiang.sl.framework.handler.SLHandler;
 import com.zhangqiang.sl.framework.image.SLImage;
 import com.zhangqiang.sl.framework.log.DefaultLogger;
@@ -14,6 +15,8 @@ public abstract class SLContext {
     private static final SLLogger mDefaultLogger = new DefaultLogger();
 
     public abstract SLPaint newPaint();
+
+    public abstract SLPath newPath();
 
     public abstract int getScaledTouchSlop();
 

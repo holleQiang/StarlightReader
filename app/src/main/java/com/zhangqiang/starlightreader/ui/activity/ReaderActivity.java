@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.GradientDrawable;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,9 +22,10 @@ import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 import com.zhangqiang.instancerestore.annotations.Instance;
 import com.zhangqiang.sl.android.ISLView;
+import com.zhangqiang.sl.android.image.AndroidDrawable;
 import com.zhangqiang.sl.framework.layout.SLLinearLayout;
 import com.zhangqiang.sl.framework.view.SLView;
-import com.zhangqiang.sl.reader.layout.CoverLayout;
+import com.zhangqiang.sl.framework.layout.CoverLayout;
 import com.zhangqiang.sl.reader.layout.CoverAdapter;
 import com.zhangqiang.sl.reader.page.PageView;
 import com.zhangqiang.sl.reader.parser.Book;
@@ -79,25 +81,12 @@ public class ReaderActivity extends BaseActivity {
 
         mCoverLayout = new CoverLayout(mSLView.getSLContext());
         mSLView.setContentView(mCoverLayout);
-        initSettings();
-        mCoverLayout.setOnPageChangeListener(new CoverLayout.OnPageChangeListener() {
-            @Override
-            public void onPageChange(SLView view) {
-                if (view instanceof SLLinearLayout) {
-                    PageView pageView = (PageView) ((SLLinearLayout) view).getChildAt(1);
-                    TextWordPosition startPosition = pageView.getStartPosition();
-                    ReadRecordModel.updateReadPosition(bookPath, startPosition);
-                }
-            }
+        initCoverLayout();
 
-            @Override
-            public void onPageCenterClick(SLView view) {
-                ReadSettingsDialog dialog = ReadSettingsDialog.newInstance();
-                dialog.show(getSupportFragmentManager(), "reader_settings");
-            }
-        });
 
     }
+
+
 
     @Override
     protected void onStart() {
@@ -209,11 +198,11 @@ public class ReaderActivity extends BaseActivity {
         mAdapter.setBottomBarDatePaddingLeft(ViewUtils.dpToPx(this, 5));
         mAdapter.setBottomBarBattery(getBatteryLevel());
         mAdapter.setBottomBarBatteryColor(0xff666666);
-        mAdapter.setBottomBarBatteryBodyBorderWidth(ViewUtils.dpToPx(this,2));
-        mAdapter.setBottomBarBatteryHeaderWidth(ViewUtils.dpToPx(this,2));
-        mAdapter.setBottomBarBatteryHeaderHeight(ViewUtils.dpToPx(this,5));
-        mAdapter.setBottomBarBatteryBodyWidth(ViewUtils.dpToPx(this,18));
-        mAdapter.setBottomBarBatteryBodyHeight(ViewUtils.dpToPx(this,12));
+        mAdapter.setBottomBarBatteryBodyBorderWidth(ViewUtils.dpToPx(this, 2));
+        mAdapter.setBottomBarBatteryHeaderWidth(ViewUtils.dpToPx(this, 2));
+        mAdapter.setBottomBarBatteryHeaderHeight(ViewUtils.dpToPx(this, 5));
+        mAdapter.setBottomBarBatteryBodyWidth(ViewUtils.dpToPx(this, 18));
+        mAdapter.setBottomBarBatteryBodyHeight(ViewUtils.dpToPx(this, 12));
         mCoverLayout.setAdapter(mAdapter);
     }
 
@@ -295,5 +284,36 @@ public class ReaderActivity extends BaseActivity {
             }));
         }
         return cellList;
+    }
+
+
+    private void initCoverLayout() {
+
+        int shadowWidth = ViewUtils.dpToPx(this,25);
+        AndroidDrawable leftShadowDrawable = new AndroidDrawable(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{0x00000000, 0x46000000}));
+        leftShadowDrawable.setBounds(0, 0, shadowWidth, 0);
+        mCoverLayout.setLeftShadowDrawable(leftShadowDrawable);
+
+        AndroidDrawable rightShadowDrawable = new AndroidDrawable(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, new int[]{0x00000000, 0x46000000}));
+        rightShadowDrawable.setBounds(0, 0, shadowWidth, 0);
+        mCoverLayout.setRightShadowDrawable(rightShadowDrawable);
+
+        initSettings();
+        mCoverLayout.setOnPageChangeListener(new CoverLayout.OnPageChangeListener() {
+            @Override
+            public void onPageChange(SLView view) {
+                if (view instanceof SLLinearLayout) {
+                    PageView pageView = (PageView) ((SLLinearLayout) view).getChildAt(1);
+                    TextWordPosition startPosition = pageView.getStartPosition();
+                    ReadRecordModel.updateReadPosition(bookPath, startPosition);
+                }
+            }
+
+            @Override
+            public void onPageCenterClick(SLView view) {
+                ReadSettingsDialog dialog = ReadSettingsDialog.newInstance();
+                dialog.show(getSupportFragmentManager(), "reader_settings");
+            }
+        });
     }
 }

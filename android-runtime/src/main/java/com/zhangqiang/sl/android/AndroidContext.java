@@ -7,17 +7,18 @@ import android.os.Looper;
 import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 
+import com.zhangqiang.sl.android.graphic.AndroidPaint;
+import com.zhangqiang.sl.android.graphic.AndroidPath;
 import com.zhangqiang.sl.android.handler.AndroidHandler;
 import com.zhangqiang.sl.android.image.AndroidImage;
 import com.zhangqiang.sl.android.log.AndroidLogger;
-import com.zhangqiang.sl.android.render.AndroidFramePoster;
 import com.zhangqiang.sl.android.render.canvas.AndroidCanvas;
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
+import com.zhangqiang.sl.framework.graphic.SLPath;
 import com.zhangqiang.sl.framework.handler.SLHandler;
 import com.zhangqiang.sl.framework.image.SLImage;
-import com.zhangqiang.sl.framework.render.SLFramePoster;
 
 public class AndroidContext extends SLContext {
 
@@ -37,6 +38,11 @@ public class AndroidContext extends SLContext {
     @Override
     public SLPaint newPaint() {
         return new AndroidPaint();
+    }
+
+    @Override
+    public SLPath newPath() {
+        return new AndroidPath();
     }
 
     @Override

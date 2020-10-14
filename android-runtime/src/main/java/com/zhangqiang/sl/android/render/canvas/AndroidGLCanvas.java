@@ -10,6 +10,7 @@ import com.chillingvan.canvasgl.glcanvas.GLPaint;
 import com.zhangqiang.sl.android.image.AndroidImage;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
+import com.zhangqiang.sl.framework.graphic.SLPath;
 import com.zhangqiang.sl.framework.graphic.SLRect;
 import com.zhangqiang.sl.framework.image.SLImage;
 
@@ -91,6 +92,11 @@ public class AndroidGLCanvas extends AndroidBasicCanvas {
 
     @Override
     public void drawRoundRect(float left, float top, float right, float bottom, float rx, float ry, SLPaint paint) {
+
+    }
+
+    @Override
+    public void drawPath(SLPath path, SLPaint paint) {
 
     }
 

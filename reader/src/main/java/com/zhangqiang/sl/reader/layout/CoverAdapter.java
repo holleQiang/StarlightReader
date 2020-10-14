@@ -2,6 +2,7 @@ package com.zhangqiang.sl.reader.layout;
 
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.image.SLColorDrawable;
+import com.zhangqiang.sl.framework.layout.CoverLayout;
 import com.zhangqiang.sl.framework.layout.SLLinearLayout;
 import com.zhangqiang.sl.framework.view.SLView;
 import com.zhangqiang.sl.framework.view.SLViewGroup;
@@ -19,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class CoverAdapter extends CoverLayoutAdapter {
+public class CoverAdapter extends CoverLayout.Adapter {
 
     private Book book;
     private PageView.RecycleBin recycleBin = new PageView.RecycleBin();

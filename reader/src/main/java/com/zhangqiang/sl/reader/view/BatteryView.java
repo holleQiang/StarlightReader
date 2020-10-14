@@ -3,6 +3,8 @@ package com.zhangqiang.sl.reader.view;
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.graphic.SLPaint;
+import com.zhangqiang.sl.framework.graphic.SLPath;
+import com.zhangqiang.sl.framework.graphic.SLRectF;
 import com.zhangqiang.sl.framework.view.SLView;
 
 public class BatteryView extends SLView {
@@ -17,10 +19,26 @@ public class BatteryView extends SLView {
     private float mBatteryLevel = 0f;
     private final SLPaint mPaint;
     private int mBatteryColor;
+    private final SLPath mBatteryHeadPath;
+    private SLRectF mBatteryHeadRectF = new SLRectF();
+    private float[] mBatterHeadRadii = new float[8];
 
     public BatteryView(SLContext context) {
         super(context);
         mPaint = context.newPaint();
+        mBatteryHeadPath = context.newPath();
+        updateBatteryHeadRadii();
+    }
+
+    private void updateBatteryHeadRadii() {
+        mBatterHeadRadii[0] = mBatteryHeadRadius;
+        mBatterHeadRadii[1] = mBatteryHeadRadius;
+        mBatterHeadRadii[2] = 0;
+        mBatterHeadRadii[3] = 0;
+        mBatterHeadRadii[4] = 0;
+        mBatterHeadRadii[5] = 0;
+        mBatterHeadRadii[6] = mBatteryHeadRadius;
+        mBatterHeadRadii[7] = mBatteryHeadRadius;
     }
 
 
@@ -34,8 +52,10 @@ public class BatteryView extends SLView {
         int batteryHeadLeft = getPaddingLeft();
         int batteryHeadRight = batteryHeadLeft + mBatteryHeadWidth;
         int batteryHeadBottom = batteryHeadTop + mBatteryHeadHeight;
-        canvas.drawRoundRect(batteryHeadLeft, batteryHeadTop, batteryHeadRight, batteryHeadBottom, mBatteryHeadRadius, mBatteryHeadRadius, mPaint);
-        canvas.drawRoundRect(batteryHeadRight - mBatteryHeadRadius, batteryHeadTop, batteryHeadRight, batteryHeadBottom, 0, 0, mPaint);
+        mBatteryHeadRectF.set(batteryHeadLeft, batteryHeadTop, batteryHeadRight, batteryHeadBottom);
+        mBatteryHeadPath.reset();
+        mBatteryHeadPath.addRoundRect(mBatteryHeadRectF, mBatterHeadRadii, SLPath.Direction.CW);
+        canvas.drawPath(mBatteryHeadPath,mPaint);
 
         float halfBorder = mBatteryBodyBorderWidth / 2;
         float batteryBodyLeft = batteryHeadRight + halfBorder;
@@ -46,7 +66,7 @@ public class BatteryView extends SLView {
         mPaint.setStrokeWidth(mBatteryBodyBorderWidth);
         canvas.drawRoundRect(batteryBodyLeft, batteryBodyTop, batteryBodyRight, batteryBodyBottom, mBatteryBodyRadius, mBatteryBodyRadius, mPaint);
 
-        int batteryLevelWidth = (int) ((mBatteryBodyWidth - mBatteryBodyBorderWidth) * mBatteryLevel);
+        int batteryLevelWidth = (int) ((mBatteryBodyWidth - mBatteryBodyBorderWidth * 2) * mBatteryLevel);
         float batteryLevelLeft = batteryBodyRight - halfBorder - batteryLevelWidth;
         float batteryLevelTop = batteryBodyTop + halfBorder;
         float batteryLevelRight = batteryLevelLeft + batteryLevelWidth;
@@ -108,6 +128,7 @@ public class BatteryView extends SLView {
     public void setBatteryHeadRadius(int batteryHeadRadius) {
         if (mBatteryHeadRadius != batteryHeadRadius) {
             this.mBatteryHeadRadius = batteryHeadRadius;
+            updateBatteryHeadRadii();
             invalidate();
         }
     }
