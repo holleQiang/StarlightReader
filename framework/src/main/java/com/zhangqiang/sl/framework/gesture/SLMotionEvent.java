@@ -1,68 +1,41 @@
 package com.zhangqiang.sl.framework.gesture;
 
-public final class SLMotionEvent {
+public abstract class SLMotionEvent {
 
     public static final int ACTION_DOWN = 0;
     public static final int ACTION_MOVE = 1;
     public static final int ACTION_UP = 2;
     public static final int ACTION_CANCEL = 3;
+    public static final int ACTION_POINTER_DOWN = 4;
+    public static final int ACTION_POINTER_UP = 5;
+    public static final int ACTION_MASK = 0xFF;
+    public static final int POINTER_INDEX_MASK = 0xFF00;
+    public static final int ACTION_POINTER_INDEX_SHIFT = 8;
 
-    private static final Object poolSync = new Object();
-    private static SLMotionEvent pool;
-    private SLMotionEvent next;
-    private float x, y;
-    private int action;
 
-    private SLMotionEvent() {
+    public abstract float getX();
+
+    public abstract float getY();
+
+    public abstract int getAction();
+
+    public abstract void offset(float xOffset,float yOffset);
+
+    public int getActionMasked(){
+        return getAction() & ACTION_MASK;
     }
 
-    public static SLMotionEvent obtain() {
-        synchronized (poolSync) {
+    public abstract int getPointerCount();
 
-            if (pool == null) {
-                return new SLMotionEvent();
-            }
-            final SLMotionEvent event = pool;
-            pool = pool.next;
-            event.next = null;
-            return event;
-        }
-    }
+    public abstract  int getPointerId(int pointerIndex);
 
-    public void recycle() {
-        synchronized (poolSync) {
-            x = y = 0;
-            next = pool;
-            pool = this;
-        }
-    }
+    public abstract int findPointerIndex(int pointerId);
 
-    public float getX() {
-        return x;
-    }
+    public abstract int getActionIndex();
 
-    public float getY() {
-        return y;
-    }
+    public abstract void setAction(int action);
 
-    public int getAction() {
-        return action;
-    }
+    public abstract float getX(int pointerIndex);
 
-    public void offset(float xOffset,float yOffset){
-        x += xOffset;
-        y += yOffset;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public void setAction(int action) {
-        this.action = action;
-    }
+    public abstract float getY(int pointerIndex);
 }

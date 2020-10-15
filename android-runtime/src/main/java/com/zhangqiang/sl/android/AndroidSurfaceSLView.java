@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.zhangqiang.sl.android.event.AndroidMotionEvent;
 import com.zhangqiang.sl.android.render.AndroidFramePoster;
 import com.zhangqiang.sl.android.render.canvas.AndroidCanvas;
 import com.zhangqiang.sl.framework.context.SLContext;
@@ -87,18 +88,8 @@ public class AndroidSurfaceSLView extends SurfaceView implements ISLView {
 
     public void handleTouchEvent(MotionEvent event) {
 
-        SLMotionEvent motionEvent = SLMotionEvent.obtain();
-        motionEvent.setX(event.getX());
-        motionEvent.setY(event.getY());
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            motionEvent.setAction(SLMotionEvent.ACTION_DOWN);
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            motionEvent.setAction(SLMotionEvent.ACTION_MOVE);
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            motionEvent.setAction(SLMotionEvent.ACTION_UP);
-        } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-            motionEvent.setAction(SLMotionEvent.ACTION_CANCEL);
-        }
+        AndroidMotionEvent motionEvent = AndroidMotionEvent.obtain(event);
+        mViewRoot.dispatchTouchEvent(motionEvent);
         SLMessage message = mHandler.obtainMessage(MSG_MOTION_EVENT);
         message.obj = motionEvent;
         message.sendToTarget();
@@ -133,7 +124,7 @@ public class AndroidSurfaceSLView extends SurfaceView implements ISLView {
             public boolean handMessage(SLMessage message) {
                 switch (message.what) {
                     case MSG_MOTION_EVENT:
-                        SLMotionEvent motionEvent = (SLMotionEvent) message.obj;
+                        AndroidMotionEvent motionEvent = (AndroidMotionEvent) message.obj;
                         mViewRoot.dispatchTouchEvent(motionEvent);
                         motionEvent.recycle();
                         break;

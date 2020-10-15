@@ -1,4 +1,4 @@
-package com.zhangqiang.sl.android.widget;
+package com.zhangqiang.sl.android.view;
 
 import android.text.Layout;
 import android.text.StaticLayout;

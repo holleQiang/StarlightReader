@@ -4,35 +4,39 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.zhangqiang.sl.android.render.AndroidFramePoster;
-import com.zhangqiang.sl.android.render.AndroidRenderBuffer;
-import com.zhangqiang.sl.android.render.AndroidRenderBufferFactory;
+import com.zhangqiang.sl.android.event.AndroidMotionEvent;
+import com.zhangqiang.sl.android.render.canvas.AndroidCanvas;
 import com.zhangqiang.sl.framework.context.SLContext;
 import com.zhangqiang.sl.framework.gesture.SLMotionEvent;
+import com.zhangqiang.sl.framework.graphic.SLCanvas;
 import com.zhangqiang.sl.framework.handler.SLHandler;
 import com.zhangqiang.sl.framework.handler.SLMessage;
 import com.zhangqiang.sl.framework.render.SLFramePoster;
+import com.zhangqiang.sl.framework.render.SLRenderBuffer;
 import com.zhangqiang.sl.framework.view.FramePosterFactory;
+import com.zhangqiang.sl.framework.view.SLRenderBufferFactory;
 import com.zhangqiang.sl.framework.view.SLRootView;
 import com.zhangqiang.sl.framework.view.SLView;
 import com.zhangqiang.sl.framework.view.SLViewRoot;
 
-public class AndroidSLView extends View implements ISLView{
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final int MSG_MOTION_EVENT = 1;
+public class AndroidSLView extends View implements ISLView {
+
     private SLViewRoot mViewRoot;
     private SLView mTempContentView;
     private SLRootView mRootView;
-    private SLHandler mHandler;
+    private boolean hasPendingInvalidateRequest;
 
     public AndroidSLView(Context context) {
         super(context);
         init(context);
     }
-
 
     public AndroidSLView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -44,16 +48,31 @@ public class AndroidSLView extends View implements ISLView{
         init(context);
     }
 
-
     private void init(Context context) {
-        mViewRoot = new SLViewRoot(new AndroidContext(context, true),
-                new AndroidRenderBufferFactory(this, true),
-                new FramePosterFactory() {
+        mViewRoot = new SLViewRoot(new AndroidContext(context, false), new SLRenderBufferFactory() {
+            @Override
+            public SLRenderBuffer create(int width, int height) {
+                return new ViewRenderBuffer();
+            }
+        }, new FramePosterFactory() {
+            @Override
+            protected SLFramePoster onCreateFramePoster() {
+
+                return new SLFramePoster() {
+
                     @Override
-                    protected SLFramePoster onCreateFramePoster() {
-                        return new AndroidFramePoster();
+                    protected void onPostFrameCallback(Runnable runnable) {
+                        postInvalidate();
+                        hasPendingInvalidateRequest = true;
                     }
-                });
+
+                    @Override
+                    protected void onRemoveFrameCallback(Runnable runnable) {
+                        hasPendingInvalidateRequest = false;
+                    }
+                };
+            }
+        });
     }
 
     @Override
@@ -66,9 +85,11 @@ public class AndroidSLView extends View implements ISLView{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        AndroidRenderBuffer renderBuffer = (AndroidRenderBuffer) mViewRoot.getRenderBuffer();
-        if (renderBuffer != null) {
-            renderBuffer.flush(canvas);
+        ((ViewRenderBuffer) mViewRoot.getRenderBuffer()).setCanvas(canvas);
+        mViewRoot.doTraversal();
+        if (hasPendingInvalidateRequest) {
+            postInvalidate();
+            hasPendingInvalidateRequest = false;
         }
     }
 
@@ -80,28 +101,11 @@ public class AndroidSLView extends View implements ISLView{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        handleTouchEvent(event);
+
+        AndroidMotionEvent motionEvent = AndroidMotionEvent.obtain(event);
+        mViewRoot.dispatchTouchEvent(motionEvent);
+        motionEvent.recycle();
         return true;
-    }
-
-
-    public void handleTouchEvent(MotionEvent event) {
-
-        SLMotionEvent motionEvent = SLMotionEvent.obtain();
-        motionEvent.setX(event.getX());
-        motionEvent.setY(event.getY());
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            motionEvent.setAction(SLMotionEvent.ACTION_DOWN);
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            motionEvent.setAction(SLMotionEvent.ACTION_MOVE);
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            motionEvent.setAction(SLMotionEvent.ACTION_UP);
-        } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-            motionEvent.setAction(SLMotionEvent.ACTION_CANCEL);
-        }
-        SLMessage message = mHandler.obtainMessage(MSG_MOTION_EVENT);
-        message.obj = motionEvent;
-        message.sendToTarget();
     }
 
     @Override
@@ -127,30 +131,43 @@ public class AndroidSLView extends View implements ISLView{
             mTempContentView = null;
         }
         mViewRoot.setView(mRootView, getWidth(), getHeight());
-
-        mHandler = context.createHandler(new SLHandler.Callback() {
-            @Override
-            public boolean handMessage(SLMessage message) {
-                switch (message.what) {
-                    case MSG_MOTION_EVENT:
-                        SLMotionEvent motionEvent = (SLMotionEvent) message.obj;
-                        mViewRoot.dispatchTouchEvent(motionEvent);
-                        motionEvent.recycle();
-                        break;
-                }
-                return false;
-            }
-        });
     }
 
     private void quit() {
-        if (mHandler != null) {
-            mHandler.removeCallbacksAndMessages();
-            mHandler = null;
-        }
+
         if (mViewRoot != null) {
             mViewRoot.release();
         }
     }
 
+    public static class ViewRenderBuffer extends SLRenderBuffer {
+
+        public static final boolean debug = true;
+        private static final String TAG = ViewRenderBuffer.class.getCanonicalName();
+        private AndroidCanvas mCanvas = new AndroidCanvas();
+
+        @Override
+        public SLCanvas lockCanvas() {
+            return mCanvas;
+        }
+
+        @Override
+        protected void handUnlockCanvasAndPost(SLCanvas canvas) {
+            mCanvas.setCanvas(null);
+        }
+
+        @Override
+        protected void onDestroy() {
+            mCanvas.setCanvas(null);
+        }
+
+        public void setCanvas(Canvas canvas) {
+            mCanvas.setCanvas(canvas);
+        }
+
+        static void logI(String log) {
+            Log.i(TAG, log);
+        }
+
+    }
 }

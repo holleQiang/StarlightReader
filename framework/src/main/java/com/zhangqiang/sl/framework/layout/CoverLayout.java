@@ -38,6 +38,8 @@ public class CoverLayout extends SLViewGroup {
     private boolean mDataChanged;
     private SLDrawable mLeftShadowDrawable;
     private SLDrawable mRightShadowDrawable;
+    private int mActivePointerId;
+    private static final int INVALID_POINTER_ID = -1;
 
     public CoverLayout(SLContext context) {
         super(context);
@@ -88,20 +90,44 @@ public class CoverLayout extends SLViewGroup {
 
     @Override
     protected boolean onInterceptTouchEvent(SLMotionEvent event) {
-        int currX = (int) event.getX();
-        int currY = (int) event.getY();
-        switch (event.getAction()) {
+
+        switch (event.getActionMasked()) {
             case SLMotionEvent.ACTION_DOWN:
+                int currX = (int) event.getX();
+                int currY = (int) event.getY();
                 mInitX = mLastX = currX;
                 mInitY = mLastY = currY;
                 beingDragged = false;
                 mTouchView = findTouchView();
                 mDragIntent = -1;
+                mActivePointerId = event.getPointerId(0);
                 break;
             case SLMotionEvent.ACTION_MOVE:
-                processDragIdentify(currX, currY);
+                int pointerIndex = event.findPointerIndex(mActivePointerId);
+                currX = (int) event.getX(pointerIndex);
+                currY = (int) event.getY(pointerIndex);
+                if (mTouchView != null && !beingDragged) {
+                    int deltaX = currX - mLastX;
+                    int deltaY = currY - mLastY;
+                    int absDeltaX = Math.abs(deltaX);
+                    int absDeltaY = Math.abs(deltaY);
+                    if (absDeltaX > mTouchSlop && absDeltaX > absDeltaY) {
+                        int intent = deltaX > 0 ? INTENT_PREVIOUS : INTENT_NEXT;
+                        if (!onInterceptIntent(intent)) {
+                            mDragIntent = intent;
+                            beingDragged = true;
+                            if (deltaX > 0) {
+                                mLastX += mTouchSlop;
+                            } else {
+                                mLastX -= mTouchSlop;
+                            }
+                        }
+                    }
+                }
                 break;
             case SLMotionEvent.ACTION_UP:
+            case SLMotionEvent.ACTION_CANCEL:
+                mActivePointerId = INVALID_POINTER_ID;
                 break;
         }
         return beingDragged;
@@ -162,27 +188,6 @@ public class CoverLayout extends SLViewGroup {
         }
     }
 
-    private void processDragIdentify(int currX, int currY) {
-        if (mTouchView != null && !beingDragged) {
-            int deltaX = currX - mLastX;
-            int deltaY = currY - mLastY;
-            int absDeltaX = Math.abs(deltaX);
-            int absDeltaY = Math.abs(deltaY);
-            if (absDeltaX > mTouchSlop && absDeltaX > absDeltaY) {
-                int intent = deltaX > 0 ? INTENT_PREVIOUS : INTENT_NEXT;
-                if (!onInterceptIntent(intent)) {
-                    mDragIntent = intent;
-                    beingDragged = true;
-                    if (deltaX > 0) {
-                        mLastX += mTouchSlop;
-                    } else {
-                        mLastX -= mTouchSlop;
-                    }
-                }
-            }
-        }
-    }
-
     private boolean onInterceptIntent(int intent) {
         if (debug) {
             SLContext.getLogger().logI(TAG, "========onInterceptIntent======");
@@ -193,14 +198,47 @@ public class CoverLayout extends SLViewGroup {
 
     @Override
     protected boolean onTouchEvent(SLMotionEvent event) {
-        int currX = (int) event.getX();
-        int currY = (int) event.getY();
-        switch (event.getAction()) {
+        switch (event.getActionMasked()) {
+            case SLMotionEvent.ACTION_POINTER_DOWN:
+                int actionIndex = event.getActionIndex();
+                mActivePointerId = event.getPointerId(actionIndex);
+                mLastX = (int) event.getX(actionIndex);
+                mLastY = (int) event.getY(actionIndex);
+                break;
+            case SLMotionEvent.ACTION_POINTER_UP:
+                actionIndex = event.getActionIndex();
+                int pointerId = event.getPointerId(actionIndex);
+                if (pointerId == mActivePointerId) {
+                    int newPointerIndex = actionIndex == 0 ? 1 : 0;
+                    mActivePointerId = event.getPointerId(newPointerIndex);
+                    mLastX = (int) event.getX(newPointerIndex);
+                    mLastY = (int) event.getY(newPointerIndex);
+                }
+                break;
             case SLMotionEvent.ACTION_MOVE:
-
-                processDragIdentify(currX, currY);
-
+                int pointerIndex = event.findPointerIndex(mActivePointerId);
+                int currX = (int) event.getX(pointerIndex);
+                int currY = (int) event.getY(pointerIndex);
+                if (mTouchView != null && !beingDragged) {
+                    int deltaX = currX - mLastX;
+                    int deltaY = currY - mLastY;
+                    int absDeltaX = Math.abs(deltaX);
+                    int absDeltaY = Math.abs(deltaY);
+                    if (absDeltaX > mTouchSlop && absDeltaX > absDeltaY) {
+                        int intent = deltaX > 0 ? INTENT_PREVIOUS : INTENT_NEXT;
+                        if (!onInterceptIntent(intent)) {
+                            mDragIntent = intent;
+                            beingDragged = true;
+                            if (deltaX > 0) {
+                                mLastX += mTouchSlop;
+                            } else {
+                                mLastX -= mTouchSlop;
+                            }
+                        }
+                    }
+                }
                 if (beingDragged) {
+
                     int deltaX = currX - mLastX;
                     if (deltaX != 0) {
                         mDragDirection = deltaX > 0 ? DRAG_DIRECTION_LTR : DRAG_DIRECTION_RTL;
@@ -209,12 +247,21 @@ public class CoverLayout extends SLViewGroup {
                         mTouchView.offsetLeftAndRight(deltaX);
                     }
                     mLastX = currX;
-                    mLastY = currY;
                 }
                 break;
             case SLMotionEvent.ACTION_UP:
                 if (!beingDragged) {
-                    if (currX > getWidth() / 3 * 2) {
+                    pointerIndex = event.findPointerIndex(mActivePointerId);
+                    currX = (int) event.getX(pointerIndex);
+                    currY = (int) event.getY(pointerIndex);
+                    int height = getHeight();
+                    int width = getWidth();
+                    int centerLeft = width / 3;
+                    int centerTop = height / 3;
+                    int centerRight = centerLeft * 2;
+                    int centerBottom = centerTop * 2;
+                    if (currX > centerLeft && currY > centerBottom
+                            || currX > centerRight) {
                         //click right
                         if (!onInterceptIntent(INTENT_NEXT)) {
                             if (mTouchView != null) {
@@ -222,7 +269,7 @@ public class CoverLayout extends SLViewGroup {
                                 notifyPageChanged();
                             }
                         }
-                    } else if (currX < getWidth() / 3) {
+                    } else if (currX < centerLeft || currX < centerRight && currY < centerTop) {
                         //click left
                         if (!onInterceptIntent(INTENT_PREVIOUS)) {
                             if (mTouchView != null) {
@@ -236,11 +283,13 @@ public class CoverLayout extends SLViewGroup {
                 } else {
                     handleBeingDraggedWhenTouchEnd();
                 }
+                mActivePointerId = INVALID_POINTER_ID;
                 break;
             case SLMotionEvent.ACTION_CANCEL:
                 if (beingDragged) {
                     handleBeingDraggedWhenTouchEnd();
                 }
+                mActivePointerId = INVALID_POINTER_ID;
                 break;
         }
         return true;
