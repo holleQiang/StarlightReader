@@ -191,6 +191,7 @@ public class SLViewRoot implements SLViewParent {
                 mRenderBuffer.destroy();
                 mRenderBuffer = null;
             }
+            mAttachInfo = null;
         }
     }
 

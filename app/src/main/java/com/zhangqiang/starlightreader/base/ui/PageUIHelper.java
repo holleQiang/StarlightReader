@@ -35,4 +35,5 @@ public abstract class PageUIHelper {
     protected void clearViewIdsCache(){
         mViewIdsCache.clear();
     }
+
 }

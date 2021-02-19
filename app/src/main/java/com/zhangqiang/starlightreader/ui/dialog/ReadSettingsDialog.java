@@ -72,6 +72,7 @@ public class ReadSettingsDialog extends BaseDialogFragment {
                 });
     }
 
+
     @Override
     protected boolean useBottomSheetFeature() {
         return true;

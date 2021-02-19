@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">StarlightReader</string>
     <string name="settings">设置</string>
-    <string name="font_size">文字大小</string>
+    <string name="font_size">字号</string>
     <string name="font_color">文字颜色</string>
     <string name="custom">自定义</string>
     <string name="white">白色</string>
@@ -14,4 +14,12 @@
     <string name="charset_gbk">GBK</string>
     <string name="chapter_list">章节列表</string>
     <string name="chapter_list_number">章节列表（共%d章）</string>
+    <string name="catalog">目录</string>
+    <string name="options">选项</string>
+    <string name="brightness">亮度</string>
+    <string name="font">字体</string>
+    <string name="smaller">小</string>
+    <string name="big">大</string>
+    <string name="change_font">更改字体</string>
+    <string name="font_complex">繁体</string>
 </resources>

@@ -6,19 +6,44 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
     </style>
 
     <style name="ReaderSettingsLabelTitle">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">#333</item>
+        <item name="android:width">100dp</item>
     </style>
 
-    <style name="AppTheme.Reader">
+    <style name="AppTheme.ReaderBase">
+    </style>
+
+    <style name="AppTheme.Reader" parent="AppTheme.ReaderBase">
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="FontColorItemRadioButton"></style>
+    <style name="FontColorItemRadioButton">
 
-    <style name="RBCharset"></style>
+    </style>
 
+    <style name="RBCharset">
+
+    </style>
+
+    <style name="AppTheme.ReadRecord">
+    </style>
+
+    <style name="ReaderBottomCoverItem">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:drawablePadding">3dp</item>
+    </style>
+
+    <style name="ReaderSettingBtn">
+        <item name="android:background">@drawable/bg_btn_options</item>
+        <item name="android:height">32dp</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

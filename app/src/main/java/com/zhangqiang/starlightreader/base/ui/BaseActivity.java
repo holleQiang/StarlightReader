@@ -22,7 +22,12 @@ public abstract class BaseActivity extends AppCompatActivity implements VisibleH
         } else {
             InstanceRestore.restore(this, getIntent().getExtras());
         }
+        initStatusBar();
         mUIHelper.onCreate(savedInstanceState);
+    }
+
+    protected void initStatusBar() {
+
     }
 
     @Override

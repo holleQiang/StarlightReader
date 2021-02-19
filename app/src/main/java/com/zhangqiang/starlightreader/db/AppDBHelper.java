@@ -13,7 +13,7 @@ public class AppDBHelper extends DBOpenHelper {
     private static AppDBHelper instance;
 
     private AppDBHelper(@Nullable Context context) {
-        super(context, "reader", null, 1);
+        super(context, "reader", null, 2);
     }
 
     public static synchronized void init(Context context){
@@ -29,5 +29,6 @@ public class AppDBHelper extends DBOpenHelper {
     @Override
     protected void onRegisterEntity(List<Class<? extends DBEntity>> entityClasses) {
         entityClasses.add(ReadRecordEntity.class);
+        entityClasses.add(ChapterEntity.class);
     }
 }

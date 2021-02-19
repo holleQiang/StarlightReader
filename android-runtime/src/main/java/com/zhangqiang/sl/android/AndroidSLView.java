@@ -11,25 +11,21 @@ import android.view.View;
 import com.zhangqiang.sl.android.event.AndroidMotionEvent;
 import com.zhangqiang.sl.android.render.canvas.AndroidCanvas;
 import com.zhangqiang.sl.framework.context.SLContext;
-import com.zhangqiang.sl.framework.gesture.SLMotionEvent;
 import com.zhangqiang.sl.framework.graphic.SLCanvas;
-import com.zhangqiang.sl.framework.handler.SLHandler;
-import com.zhangqiang.sl.framework.handler.SLMessage;
 import com.zhangqiang.sl.framework.render.SLFramePoster;
 import com.zhangqiang.sl.framework.render.SLRenderBuffer;
 import com.zhangqiang.sl.framework.view.FramePosterFactory;
 import com.zhangqiang.sl.framework.view.SLRenderBufferFactory;
 import com.zhangqiang.sl.framework.view.SLRootView;
 import com.zhangqiang.sl.framework.view.SLView;
+import com.zhangqiang.sl.framework.view.SLViewGroup;
+import com.zhangqiang.sl.framework.view.SLViewParent;
 import com.zhangqiang.sl.framework.view.SLViewRoot;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AndroidSLView extends View implements ISLView {
 
     private SLViewRoot mViewRoot;
-    private SLView mTempContentView;
+    private SLView mContentView;
     private SLRootView mRootView;
     private boolean hasPendingInvalidateRequest;
 
@@ -110,9 +106,8 @@ public class AndroidSLView extends View implements ISLView {
 
     @Override
     public void setContentView(SLView view) {
-        if (mRootView == null) {
-            mTempContentView = view;
-        } else {
+        mContentView = view;
+        if (mRootView != null) {
             mRootView.setContentView(view);
         }
     }
@@ -126,9 +121,8 @@ public class AndroidSLView extends View implements ISLView {
 
         SLContext context = mViewRoot.getContext();
         mRootView = new SLRootView(context);
-        if (mTempContentView != null) {
-            mRootView.setContentView(mTempContentView);
-            mTempContentView = null;
+        if (mContentView != null) {
+            mRootView.setContentView(mContentView);
         }
         mViewRoot.setView(mRootView, getWidth(), getHeight());
     }
@@ -137,6 +131,12 @@ public class AndroidSLView extends View implements ISLView {
 
         if (mViewRoot != null) {
             mViewRoot.release();
+        }
+        if (mContentView != null) {
+            SLViewParent parent = mContentView.getParent();
+            if (parent instanceof SLViewGroup) {
+                ((SLViewGroup) parent).removeView(mContentView);
+            }
         }
     }
 

@@ -4,15 +4,12 @@ import com.zhangqiang.sl.reader.parser.Book;
 import com.zhangqiang.sl.reader.parser.Paragraph;
 import com.zhangqiang.sl.reader.position.TextWordPosition;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TxtBook implements Book {
 
     private List<Chapter> chapters;
     private List<Paragraph> paragraphs;
-    private final Map<Integer, Chapter> mChapterSearchCache = new HashMap<>();
     private String mBookName;
 
     public TxtBook(String bookName, List<Chapter> chapters, List<Paragraph> paragraphs) {
@@ -47,31 +44,15 @@ public class TxtBook implements Book {
         if (chapters == null || chapters.isEmpty()) {
             return null;
         }
-
         int paragraphIndex = position.getParagraphIndex();
-
-        Chapter targetChapter = mChapterSearchCache.get(paragraphIndex);
-        if (targetChapter == null) {
-
-            Chapter preChapter = null;
-            int chapterCount = chapters.size();
-            for (int i = 0; i < chapterCount; i++) {
-                Chapter chapter = chapters.get(i);
-                TextWordPosition chapterPosition = chapter.getPosition();
-                int tempIndex = chapterPosition.getParagraphIndex();
-                if (preChapter != null && paragraphIndex >= preChapter.getPosition().getParagraphIndex() && paragraphIndex < tempIndex) {
-                    targetChapter = preChapter;
-                    break;
-                } else if (i == chapterCount - 1) {
-                    targetChapter = chapter;
-                }
-                preChapter = chapter;
+        for (int i = 0; i < chapters.size(); i++) {
+            Chapter chapter = chapters.get(i);
+            if (paragraphIndex >= chapter.getStartPosition().getParagraphIndex()
+                    && paragraphIndex <= chapter.getEndPosition().getParagraphIndex()) {
+                return chapter.getName();
             }
-        }
-        if (targetChapter != null) {
-            mChapterSearchCache.put(paragraphIndex, targetChapter);
-            return targetChapter.getName();
         }
         return null;
     }
+
 }
