@@ -2,10 +2,16 @@ package com.zhangqiang.starlightreader.model;
 
 import com.zhangqiang.fastdatabase.dao.Dao;
 import com.zhangqiang.slreader.position.TextWordPosition;
+import com.zhangqiang.starlightreader.bean.ReadRecordBean;
 import com.zhangqiang.starlightreader.db.AppDBHelper;
 import com.zhangqiang.starlightreader.db.ReadRecordEntity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 public class ReadRecordModel {
 
@@ -36,5 +42,36 @@ public class ReadRecordModel {
             return position;
         }
         return new TextWordPosition(0, 0);
+    }
+
+    public static Observable<List<ReadRecordBean>> getAllReadRecords(){
+
+        return Observable.create(new ObservableOnSubscribe<List<ReadRecordBean>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<ReadRecordBean>> emitter) throws Exception {
+                try {
+                    List<ReadRecordEntity> entities = AppDBHelper.getInstance().getDao(ReadRecordEntity.class)
+                            .query(null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    Dao.COLUMN_NAME_UPDATE_TIME+" desc"
+                                    ,null);
+                    List<ReadRecordBean> recordBeans = new ArrayList<>();
+                    if (entities != null) {
+                        for (int i = 0; i < entities.size(); i++) {
+                            ReadRecordEntity entity = entities.get(i);
+                            ReadRecordBean recordBean = new ReadRecordBean();
+                            recordBeans.add(recordBean);
+                        }
+                    }
+                    emitter.onNext(recordBeans);
+                    emitter.onComplete();
+                }catch (Throwable e){
+                    emitter.onError(e);
+                }
+            }
+        });
     }
 }

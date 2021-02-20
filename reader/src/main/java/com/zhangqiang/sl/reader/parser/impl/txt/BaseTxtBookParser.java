@@ -41,14 +41,25 @@ public abstract class BaseTxtBookParser extends BookParser {
             int start = 0;
             int offset = 0;
             String line;
+            Chapter lastChapter = null;
             while ((line = reader.readLine()) != null) {
+
+                offset = 0;
 
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.matches()) {
+
+                    if (lastChapter != null) {
+                        int paragraphIndex = paragraphs.size() - 1;
+                        int elementIndex = paragraphs.get(paragraphIndex).getElementCount() - 1;
+                        lastChapter.getEndPosition().set(paragraphIndex, elementIndex);
+                    }
+
                     Chapter chapter = new Chapter();
                     chapter.setName(line);
-                    chapter.getPosition().set(paragraphs.size(),offset);
+                    chapter.getStartPosition().set(paragraphs.size(), offset);
                     chapters.add(chapter);
+                    lastChapter = chapter;
                 }
 
                 int length = line.length();
@@ -59,7 +70,6 @@ public abstract class BaseTxtBookParser extends BookParser {
                     if (i == length - 1) {
                         Paragraph paragraph = new ParagraphImpl(elements, start, offset);
                         start += offset;
-                        offset = 0;
                         paragraphs.add(paragraph);
                     }
                 }
@@ -68,7 +78,10 @@ public abstract class BaseTxtBookParser extends BookParser {
                 Paragraph paragraph = new ParagraphImpl(elements, start, offset);
                 paragraphs.add(paragraph);
             }
-            return new TxtBook(parseBookName(),chapters, paragraphs);
+            if (lastChapter != null) {
+                lastChapter.getEndPosition().set(paragraphs.size() - 1, offset);
+            }
+            return new TxtBook(parseBookName(), chapters, paragraphs);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

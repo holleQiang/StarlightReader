@@ -33,6 +33,7 @@ public class CoverAdapter extends CoverLayout.Adapter {
     private int mParagraphSpace;
     private int mTopBarTextSize = 30;
     private int mTopBarTextColor;
+    private int mTopBarHeight = SLViewGroup.LayoutParams.SIZE_WRAP_CONTENT;
     private float mLineHeightMultiple = 1f;
     private int mBottomBarDatePaddingLeft;
     private int mBottomBarTextSize;
@@ -81,6 +82,7 @@ public class CoverAdapter extends CoverLayout.Adapter {
         topBarView.setTextColor(mTopBarTextColor);
         topBarView.setBookName(book.getName());
         topBarView.setPadding(mTopBarPaddingLeft, mTopBarPaddingTop, mTopBarPaddingRight, mTopBarPaddingBottom);
+        topBarView.getLayoutParams().height = mTopBarHeight;
 
         PageView pageView = (PageView) contentView.getChildAt(1);
         pageView.setRecycleBin(recycleBin);
@@ -310,6 +312,13 @@ public class CoverAdapter extends CoverLayout.Adapter {
     public void setBottomBarBatteryBodyBorderWidth(int bottomBarBatteryBodyBorderWidth) {
         if (mBottomBarBatteryBodyBorderWidth != bottomBarBatteryBodyBorderWidth) {
             this.mBottomBarBatteryBodyBorderWidth = bottomBarBatteryBodyBorderWidth;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTopBarHeight(int topBarHeight) {
+        if (mTopBarHeight != topBarHeight) {
+            this.mTopBarHeight = topBarHeight;
             notifyDataChanged();
         }
     }

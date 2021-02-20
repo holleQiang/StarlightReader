@@ -15,6 +15,7 @@ import com.zhangqiang.starlightreader.base.ui.BaseFragment;
 import com.zhangqiang.starlightreader.bean.BookFileBean;
 import com.zhangqiang.starlightreader.extend.BaseObserver;
 import com.zhangqiang.starlightreader.model.BookFileModel;
+import com.zhangqiang.starlightreader.ui.activity.ReadRecordActivity;
 import com.zhangqiang.starlightreader.ui.activity.ReaderActivity;
 import com.zhangqiang.starlightreader.utils.RxJavaUtils;
 

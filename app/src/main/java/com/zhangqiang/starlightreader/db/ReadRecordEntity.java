@@ -4,18 +4,9 @@ import com.zhangqiang.fastdatabase.entity.DBEntity;
 
 public class ReadRecordEntity extends DBEntity {
 
-    private String bookName;
     private String bookPath;
     private int paragraphIndex;
     private int elementIndex;
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
 
     public int getParagraphIndex() {
         return paragraphIndex;
