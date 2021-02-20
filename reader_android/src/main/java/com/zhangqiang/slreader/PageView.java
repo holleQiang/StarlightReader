@@ -25,7 +25,7 @@ public class PageView extends ViewGroup {
     private boolean mReverse;
     private RecycleBin mRecycleBin;
     private final List<LineInfo> mLineInfoList = new ArrayList<>();
-    private PageViewAdapter mAdapter = new DefaultAdapter();
+    private PageViewAdapter mAdapter;
     private int mParagraphSpace;
 
     public PageView(Context context) {

@@ -10,65 +10,91 @@ import com.zhangqiang.options.store.shared.SharedValueStore;
 
 public class ReadSettingsModel {
 
-    public static final String [] supportCharsets = new String[]{"UTF-8","GBK","Unicode","UTF-16BE","UTF-16LE","ANSI|ASCII"};
+    public static final String CHARSET_UTF_8 = "UTF-8";
+    public static final String CHARSET_GBK = "GBK";
+    public static final String CHARSET_ISO_8859_1 = "ISO_8859_1";
+    public static final String[] supportCharsets = new String[]{CHARSET_UTF_8, CHARSET_GBK, CHARSET_ISO_8859_1};
     private static final int MIN_FONT_SIZE_SP = 15;
     private static final int MAX_FONT_SIZE_SP = 35;
-    private static Option<Float> txtSizeOption;
-    private static Option<String> txtCharsetOption;
-    private static Option<Integer> txtColorOption;
-    private static boolean init = false;
+    private final Option<Float> mTxtSizeOption;
+    private final Option<String> mTxtCharsetOption;
+    private final Option<Integer> mTxtColorOption;
+    private final Option<Boolean> mTxtSimpleOption;
+    private static volatile ReadSettingsModel instance;
 
-    public static void init(Context context) {
-
-        if (init) {
-            return;
-        }
-        init = true;
+    private ReadSettingsModel(Context context) {
         ValueStore valueStore = new SharedValueStore(context, "reader_config");
-        txtSizeOption = Options.ofFloat("reader_font_size", (float) MIN_FONT_SIZE_SP + (MAX_FONT_SIZE_SP - MIN_FONT_SIZE_SP) / 2, valueStore);
-        txtCharsetOption = Options.ofString("reader_charset", supportCharsets[0], valueStore);
-        txtColorOption = Options.ofInt("reader_txt_color", Color.parseColor("#333333"), valueStore);
+        mTxtSizeOption = Options.ofFloat("reader_font_size", 20f, valueStore);
+        mTxtCharsetOption = Options.ofString("reader_charset", supportCharsets[0], valueStore);
+        mTxtColorOption = Options.ofInt("reader_txt_color", Color.parseColor("#333333"), valueStore);
+        mTxtSimpleOption = Options.ofBoolean("reader_txt_simple", true, valueStore);
     }
 
-    public static float getTxtSizeRangeFactor() {
-
-        return (txtSizeOption.get() - MIN_FONT_SIZE_SP) / (MAX_FONT_SIZE_SP - MIN_FONT_SIZE_SP);
+    public static ReadSettingsModel getInstance(Context context) {
+        if (instance == null) {
+            synchronized (ReadSettingsModel.class) {
+                if (instance == null) {
+                    instance = new ReadSettingsModel(context.getApplicationContext());
+                }
+            }
+        }
+        return instance;
     }
 
-    public static Option<Float> getTxtSizeOption() {
-        return txtSizeOption;
+    public Option<Float> getTxtSizeOption() {
+        return mTxtSizeOption;
     }
 
-    public static float getTxtSize() {
-        return txtSizeOption.get();
+    public float getTxtSize() {
+        return mTxtSizeOption.get();
     }
 
-    public static void setTxtSize(float factor) {
+    public void setTextSize(float textSize) {
+        mTxtSizeOption.set(Math.max(MIN_FONT_SIZE_SP, Math.min(textSize, MAX_FONT_SIZE_SP)));
+    }
+
+    public void setTxtSizeFactor(float factor) {
         float targetFontSize = (MAX_FONT_SIZE_SP - MIN_FONT_SIZE_SP) * factor + MIN_FONT_SIZE_SP;
-        txtSizeOption.set(targetFontSize);
+        setTextSize(targetFontSize);
     }
 
-    public static String getTxtCharset() {
-        return txtCharsetOption.get();
+    public float getTxtSizeFactor() {
+        return (getTxtSize() - MIN_FONT_SIZE_SP) / (MAX_FONT_SIZE_SP - MIN_FONT_SIZE_SP);
     }
 
-    public static void setTxtCharset(String charset) {
-        txtCharsetOption.set(charset);
+    public String getTxtCharset() {
+        return mTxtCharsetOption.get();
     }
 
-    public static int getTxtColor() {
-        return txtColorOption.get();
+    public void setTxtCharset(String charset) {
+        mTxtCharsetOption.set(charset);
     }
 
-    public static void setTxtColor(int color) {
-        txtColorOption.set(color);
+    public int getTxtColor() {
+        return mTxtColorOption.get();
     }
 
-    public static Option<String> getTxtCharsetOption() {
-        return txtCharsetOption;
+    public void setTxtColor(int color) {
+        mTxtColorOption.set(color);
     }
 
-    public static Option<Integer> getTxtColorOption() {
-        return txtColorOption;
+    public Option<String> getTxtCharsetOption() {
+        return mTxtCharsetOption;
+    }
+
+    public Option<Integer> getTxtColorOption() {
+        return mTxtColorOption;
+    }
+
+    public Option<Boolean> getTxtSimpleOption() {
+        return mTxtSimpleOption;
+    }
+
+    public boolean isTxtSimple(){
+        return mTxtSimpleOption.get();
+    }
+
+    public void setTxtSimple(boolean simple){
+        mTxtSimpleOption.set(simple);
     }
 }

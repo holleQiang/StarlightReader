@@ -14,6 +14,7 @@ import com.zhangqiang.starlightreader.R;
 import com.zhangqiang.starlightreader.base.ui.BaseDialogFragment;
 import com.zhangqiang.starlightreader.extend.BaseObserver;
 import com.zhangqiang.starlightreader.model.ReadSettingsModel;
+import com.zhangqiang.starlightreader.ui.activity.ReaderActivity;
 import com.zhangqiang.starlightreader.utils.RxJavaUtils;
 
 public class ChooseCharsetDialog extends BaseDialogFragment {
@@ -40,7 +41,7 @@ public class ChooseCharsetDialog extends BaseDialogFragment {
         }
         mRecyclerView.setAdapter(mAdapter);
 
-        ReadSettingsModel.getTxtCharsetOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+        ReadSettingsModel.getInstance(getContext()).getTxtCharsetOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     public void onNext(String s) {
@@ -65,11 +66,11 @@ public class ChooseCharsetDialog extends BaseDialogFragment {
             @Override
             public void onBind(ViewHolder viewHolder, String s) {
                 viewHolder.setText(R.id.tv_title, s);
-                viewHolder.setVisibility(R.id.iv_select, ReadSettingsModel.getTxtCharset().equals(s) ? View.VISIBLE : View.INVISIBLE);
+                viewHolder.setVisibility(R.id.iv_select, ReadSettingsModel.getInstance(getContext()).getTxtCharset().equals(s) ? View.VISIBLE : View.INVISIBLE);
                 viewHolder.getView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ReadSettingsModel.setTxtCharset(s);
+                        ReadSettingsModel.getInstance(getContext()).setTxtCharset(s);
                     }
                 });
             }

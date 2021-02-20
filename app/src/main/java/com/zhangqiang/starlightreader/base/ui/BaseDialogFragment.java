@@ -1,6 +1,7 @@
 package com.zhangqiang.starlightreader.base.ui;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.zhangqiang.visiblehelper.FragmentVisibleHelper;
 import com.zhangqiang.visiblehelper.VisibleHelper;
@@ -19,8 +21,8 @@ import com.zhangqiang.visiblehelper.VisibleHelperOwner;
 public class BaseDialogFragment extends AppCompatDialogFragment implements VisibleHelperOwner, PageUI, UIHelperOwner {
 
 
-    private FragmentVisibleHelper mVisibleHelper = new FragmentVisibleHelper(this);
-    private FragmentUIHelper uiHelper = new FragmentUIHelper(this);
+    private final FragmentVisibleHelper mVisibleHelper = new FragmentVisibleHelper(this);
+    private final FragmentUIHelper uiHelper = new FragmentUIHelper(this);
 
     @NonNull
     @Override
@@ -54,6 +56,10 @@ public class BaseDialogFragment extends AppCompatDialogFragment implements Visib
     public void onStart() {
         super.onStart();
         mVisibleHelper.onStart();
+        if (useBottomSheetFeature() && closeFitSystemWindow()) {
+            View coordinateView = getDialog().getWindow().getDecorView().findViewById(android.support.design.R.id.coordinator);
+            ((ViewGroup) coordinateView.getParent()).setFitsSystemWindows(false);
+        }
     }
 
     @Override
@@ -92,4 +98,9 @@ public class BaseDialogFragment extends AppCompatDialogFragment implements Visib
     protected boolean useBottomSheetFeature() {
         return false;
     }
+
+    protected boolean closeFitSystemWindow(){
+        return false;
+    }
+
 }

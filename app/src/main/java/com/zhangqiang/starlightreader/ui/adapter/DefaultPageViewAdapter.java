@@ -1,4 +1,4 @@
-package com.zhangqiang.slreader;
+package com.zhangqiang.starlightreader.ui.adapter;
 
 
 import android.graphics.drawable.ColorDrawable;
@@ -7,16 +7,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zhangqiang.slreader.PageView;
+import com.zhangqiang.slreader.PageViewAdapter;
 import com.zhangqiang.slreader.parser.Element;
 import com.zhangqiang.slreader.parser.impl.txt.TextElement;
+import com.zhangqiang.starlightreader.utils.StringUtils;
 
-public class DefaultAdapter extends PageViewAdapter {
+public class DefaultPageViewAdapter extends PageViewAdapter {
 
     public static final int ITEM_TYPE_TEXT = 0;
     public static final int ITEM_TYPE_IMAGE = 1;
     private float mTextSize = 20;
     private int mTextColor = 0xff000000;
     private float mLineHeightMultiple = 1f;
+    private boolean mTextSimple = true;
 
     @Override
     public int getItemType(Element element) {
@@ -38,7 +42,8 @@ public class DefaultAdapter extends PageViewAdapter {
                 textView = (TextView) convertView;
             }
 
-            textView.setText(((TextElement) element).getText());
+            String text = ((TextElement) element).getText();
+            textView.setText(mTextSimple ? text : StringUtils.simple2Traditional(text));
             textView.setTextSize(mTextSize);
             textView.setTextColor(mTextColor);
             textView.setLineSpacing(0,mLineHeightMultiple);
@@ -74,6 +79,13 @@ public class DefaultAdapter extends PageViewAdapter {
     public void setLineHeightMultiple(float lineHeightMultiple) {
         if (mLineHeightMultiple != lineHeightMultiple) {
             this.mLineHeightMultiple = lineHeightMultiple;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTextSimple(boolean textSimple) {
+        if (mTextSimple != textSimple) {
+            mTextSimple = textSimple;
             notifyDataChanged();
         }
     }

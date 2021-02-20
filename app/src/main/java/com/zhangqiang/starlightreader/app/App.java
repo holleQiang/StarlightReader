@@ -15,7 +15,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        ReadSettingsModel.init(this);
         AppDBHelper.init(this);
     }
 }

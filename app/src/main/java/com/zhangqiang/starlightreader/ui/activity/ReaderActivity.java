@@ -32,7 +32,7 @@ import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 import com.zhangqiang.instancerestore.annotations.Instance;
 import com.zhangqiang.slreader.PageView;
-import com.zhangqiang.slreader.layout.CoverAdapter;
+import com.zhangqiang.starlightreader.ui.adapter.CoverAdapter;
 import com.zhangqiang.slreader.parser.Book;
 import com.zhangqiang.slreader.parser.impl.txt.Chapter;
 import com.zhangqiang.slreader.parser.impl.txt.TxtBook;
@@ -57,7 +57,6 @@ public class ReaderActivity extends BaseActivity {
 
 
     private static final int COVER_ANIMATION_DURATION = 200;
-    private ISLView mSLView;
     @Instance
     String bookPath;
     private CoverLayout mCoverLayout;
@@ -277,14 +276,8 @@ public class ReaderActivity extends BaseActivity {
                             tvChapterListLabel.setText(String.format(Locale.getDefault(), getResources().getString(R.string.chapter_list_number), chapterCount));
                         }
 
-                        mCoverLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                TextWordPosition readPosition = ReadRecordModel.getReadPosition(bookPath);
-                                setupBook(book, readPosition);
-                            }
-                        });
+                        TextWordPosition readPosition = ReadRecordModel.getReadPosition(bookPath);
+                        setupBook(book, readPosition);
                     }
 
                     @Override
@@ -325,8 +318,9 @@ public class ReaderActivity extends BaseActivity {
                 return ReadRecordModel.getReadPosition(bookPath);
             }
         });
-        mAdapter.setTextColor(ReadSettingsModel.getTxtColor());
-        mAdapter.setTextSize(ReadSettingsModel.getTxtSize());
+        mAdapter.setTextColor(ReadSettingsModel.getInstance(ReaderActivity.this).getTxtColor());
+        mAdapter.setTextSize(ReadSettingsModel.getInstance(ReaderActivity.this).getTxtSize());
+        mAdapter.setTextSimple(ReadSettingsModel.getInstance(ReaderActivity.this).isTxtSimple());
 
         mAdapter.setContentPadding(hPadding, 0, hPadding, 0);
         mAdapter.setTopBarPadding(hPadding, vPadding, topBarRightPadding, vPadding);
@@ -350,7 +344,7 @@ public class ReaderActivity extends BaseActivity {
 
     private void initSettings() {
 
-        ReadSettingsModel.getTxtCharsetOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+        ReadSettingsModel.getInstance(ReaderActivity.this).getTxtCharsetOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     public void onNext(String s) {
@@ -362,7 +356,7 @@ public class ReaderActivity extends BaseActivity {
 
                     }
                 });
-        ReadSettingsModel.getTxtColorOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+        ReadSettingsModel.getInstance(ReaderActivity.this).getTxtColorOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<Integer>() {
                     @Override
                     public void onNext(Integer integer) {
@@ -376,7 +370,7 @@ public class ReaderActivity extends BaseActivity {
 
                     }
                 });
-        ReadSettingsModel.getTxtSizeOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+        ReadSettingsModel.getInstance(ReaderActivity.this).getTxtSizeOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<Float>() {
                     @Override
                     public void onNext(Float aFloat) {
@@ -387,6 +381,20 @@ public class ReaderActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
+
+                    }
+                });
+        ReadSettingsModel.getInstance(ReaderActivity.this).getTxtSimpleOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+                .subscribe(new BaseObserver<Boolean>() {
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
+                        if (mAdapter != null) {
+                            mAdapter.setTextSimple(aBoolean);
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
                     }
                 });

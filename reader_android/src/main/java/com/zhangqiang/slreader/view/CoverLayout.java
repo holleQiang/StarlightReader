@@ -3,12 +3,14 @@ package com.zhangqiang.slreader.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
 import com.zhangqiang.slreader.utils.LogUtils;
@@ -22,7 +24,8 @@ public class CoverLayout extends ViewGroup {
     private static final String TAG = CoverLayout.class.getCanonicalName();
     private int mTouchSlop;
     private int mLastX, mLastY;
-    private boolean beingDragged;
+    private boolean beingDraggedHorizontal;
+    private boolean beingDraggedVertical;
     private int mInitX;
     private int mInitY;
     private static final int DRAG_DIRECTION_LTR = 0;
@@ -46,7 +49,7 @@ public class CoverLayout extends ViewGroup {
 
     public CoverLayout(Context context) {
         super(context);
-        init();
+       init();
     }
 
     public CoverLayout(Context context, AttributeSet attrs) {
@@ -63,6 +66,7 @@ public class CoverLayout extends ViewGroup {
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mRecycleBin = new RecycleBin();
     }
+
 
     @Override
     public void requestLayout() {
@@ -114,7 +118,8 @@ public class CoverLayout extends ViewGroup {
                 int currY = (int) event.getY();
                 mInitX = mLastX = currX;
                 mInitY = mLastY = currY;
-                beingDragged = false;
+                beingDraggedHorizontal = false;
+                beingDraggedVertical = false;
                 mTouchView = findTouchView();
                 mDragIntent = -1;
                 mActivePointerId = event.getPointerId(0);
@@ -123,7 +128,7 @@ public class CoverLayout extends ViewGroup {
                 int pointerIndex = event.findPointerIndex(mActivePointerId);
                 currX = (int) event.getX(pointerIndex);
                 currY = (int) event.getY(pointerIndex);
-                if (mTouchView != null && !beingDragged) {
+                if (mTouchView != null && !beingDraggedHorizontal && !beingDraggedVertical) {
                     int deltaX = currX - mLastX;
                     int deltaY = currY - mLastY;
                     int absDeltaX = Math.abs(deltaX);
@@ -132,13 +137,16 @@ public class CoverLayout extends ViewGroup {
                         int intent = deltaX > 0 ? INTENT_PREVIOUS : INTENT_NEXT;
                         if (!onInterceptIntent(intent)) {
                             mDragIntent = intent;
-                            beingDragged = true;
+                            beingDraggedHorizontal = true;
                             if (deltaX > 0) {
                                 mLastX += mTouchSlop;
                             } else {
                                 mLastX -= mTouchSlop;
                             }
                         }
+                    }
+                    if(absDeltaY > mTouchSlop && absDeltaY > absDeltaX){
+                        beingDraggedVertical = true;
                     }
                 }
                 break;
@@ -147,7 +155,7 @@ public class CoverLayout extends ViewGroup {
                 mActivePointerId = INVALID_POINTER_ID;
                 break;
         }
-        return beingDragged;
+        return beingDraggedHorizontal;
     }
 
     @Override
@@ -205,6 +213,7 @@ public class CoverLayout extends ViewGroup {
         return result;
     }
 
+
     private boolean onInterceptIntent(int intent) {
         if (debug) {
             LogUtils.logI(TAG, "========onInterceptIntent======");
@@ -236,7 +245,7 @@ public class CoverLayout extends ViewGroup {
                 int pointerIndex = event.findPointerIndex(mActivePointerId);
                 int currX = (int) event.getX(pointerIndex);
                 int currY = (int) event.getY(pointerIndex);
-                if (mTouchView != null && !beingDragged) {
+                if (mTouchView != null && !beingDraggedHorizontal && !beingDraggedVertical) {
                     int deltaX = currX - mLastX;
                     int deltaY = currY - mLastY;
                     int absDeltaX = Math.abs(deltaX);
@@ -245,7 +254,7 @@ public class CoverLayout extends ViewGroup {
                         int intent = deltaX > 0 ? INTENT_PREVIOUS : INTENT_NEXT;
                         if (!onInterceptIntent(intent)) {
                             mDragIntent = intent;
-                            beingDragged = true;
+                            beingDraggedHorizontal = true;
                             if (deltaX > 0) {
                                 mLastX += mTouchSlop;
                             } else {
@@ -253,13 +262,17 @@ public class CoverLayout extends ViewGroup {
                             }
                         }
                     }
+                    if(absDeltaY > mTouchSlop && absDeltaY > absDeltaX){
+                        beingDraggedVertical = true;
+                    }
                 }
-                if (beingDragged) {
+                if (beingDraggedHorizontal) {
 
                     int deltaX = currX - mLastX;
                     if (deltaX != 0) {
                         mDragDirection = deltaX > 0 ? DRAG_DIRECTION_LTR : DRAG_DIRECTION_RTL;
                     }
+                    invalidate();
                     if (mTouchView != null) {
                         mTouchView.offsetLeftAndRight(deltaX);
                     }
@@ -267,16 +280,16 @@ public class CoverLayout extends ViewGroup {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (!beingDragged) {
+                if (!beingDraggedHorizontal & !beingDraggedVertical) {
                     pointerIndex = event.findPointerIndex(mActivePointerId);
                     currX = (int) event.getX(pointerIndex);
                     currY = (int) event.getY(pointerIndex);
                     int height = getHeight();
                     int width = getWidth();
                     int centerLeft = width / 3;
-                    int centerTop = height / 3;
+                    int centerTop = height / 5;
                     int centerRight = centerLeft * 2;
-                    int centerBottom = centerTop * 2;
+                    int centerBottom = centerTop * 4;
                     if (currX > centerLeft && currY > centerBottom
                             || currX > centerRight) {
                         //click right
@@ -303,7 +316,7 @@ public class CoverLayout extends ViewGroup {
                 mActivePointerId = INVALID_POINTER_ID;
                 break;
             case MotionEvent.ACTION_CANCEL:
-                if (beingDragged) {
+                if (beingDraggedHorizontal) {
                     handleBeingDraggedWhenTouchEnd();
                 }
                 mActivePointerId = INVALID_POINTER_ID;
@@ -313,7 +326,7 @@ public class CoverLayout extends ViewGroup {
     }
 
     private void handleBeingDraggedWhenTouchEnd() {
-        beingDragged = false;
+        beingDraggedHorizontal = false;
         if (mDragDirection == DRAG_DIRECTION_LTR) {
             if (mDragIntent == INTENT_PREVIOUS) {
                 if (mTouchView != null) {
@@ -352,17 +365,17 @@ public class CoverLayout extends ViewGroup {
     }
 
     private void smoothScrollToRight(View child) {
-        Scroller scroller = new Scroller(getContext());
+        Scroller scroller = new Scroller(getContext(),new LinearInterpolator());
         int left = child.getLeft();
-        scroller.startScroll(left, 0, getWidth() - left, 0, 1000);
+        scroller.startScroll(left, 0, getWidth() - left, 0, 300);
         mActiveScrollItems.add(new ScrollItem(child, scroller));
         invalidate();
     }
 
     private void smoothScrollToLeft(View child) {
-        Scroller scroller = new Scroller(getContext());
+        Scroller scroller = new Scroller(getContext(),new LinearInterpolator());
         int left = child.getLeft();
-        scroller.startScroll(left, 0, -getWidth() - left, 0, 1000);
+        scroller.startScroll(left, 0, -getWidth() - left, 0, 300);
         mActiveScrollItems.add(new ScrollItem(child, scroller));
         invalidate();
     }
@@ -370,7 +383,7 @@ public class CoverLayout extends ViewGroup {
     private void smoothScrollToOrigin(View child) {
         Scroller scroller = new Scroller(getContext());
         int left = child.getLeft();
-        scroller.startScroll(left, 0, 0 - left, 0, 1000);
+        scroller.startScroll(left, 0, 0 - left, 0, 300);
         mActiveScrollItems.add(new ScrollItem(child, scroller));
         invalidate();
     }
@@ -527,7 +540,7 @@ public class CoverLayout extends ViewGroup {
                 ViewNode node = mActiveView;
                 mActiveView = node.next;
                 View view = node.view;
-                removeDetachedView(view, false);
+                removeDetachedView(view,false);
                 node.recycle();
                 addScrapView(view);
             }
@@ -583,29 +596,33 @@ public class CoverLayout extends ViewGroup {
         if (!mDataChanged) {
             View activeView = mRecycleBin.getActiveView(prevView);
             if (activeView != null) {
-                setupView(activeView, true);
+                setupView(activeView,true);
                 return activeView;
             }
         }
 
         View view = obtainView(prevView, viewType);
         if (view != null) {
-            setupView(view, false);
+            setupView(view,false);
         }
         return view;
     }
 
-    private void setupView(View view, boolean isAttachedToWindow) {
+    private void setupView(View view,boolean isAttachedToWindow) {
         boolean needToMeasure = view.isLayoutRequested() || !isAttachedToWindow;
         if (isAttachedToWindow) {
             attachViewToParent(view, 0, view.getLayoutParams());
         } else {
-            addViewInLayout(view, 0, view.getLayoutParams(), true);
+            LayoutParams layoutParams = view.getLayoutParams();
+            if (layoutParams == null) {
+                layoutParams = generateDefaultLayoutParams();
+            }
+            addViewInLayout(view, 0,layoutParams,true);
         }
         if (needToMeasure) {
             int widthMeasureOptions = MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY);
             int heightMeasureOptions = MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY);
-            measureChild(view, widthMeasureOptions, heightMeasureOptions);
+            measureChild(view,widthMeasureOptions, heightMeasureOptions);
             view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         }
     }
@@ -615,11 +632,6 @@ public class CoverLayout extends ViewGroup {
         View child = mAdapter.getView(this, prevView, scrapView, viewType);
         if (scrapView != null && scrapView != child) {
             mRecycleBin.addScrapView(scrapView);
-        }
-        LayoutParams layoutParams = child.getLayoutParams();
-        if (layoutParams == null) {
-            layoutParams = generateDefaultLayoutParams();
-            child.setLayoutParams(layoutParams);
         }
         return child;
     }

@@ -22,4 +22,6 @@
     <string name="big">大</string>
     <string name="change_font">更改字体</string>
     <string name="font_complex">繁体</string>
+    <string name="encode">编码</string>
+    <string name="charset_ISO_8859_1">ISO_8859_1</string>
 </resources>

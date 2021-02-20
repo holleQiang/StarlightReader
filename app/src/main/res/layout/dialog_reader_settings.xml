@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingTop="18dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="20dp"
-    tools:parentTag="android.support.constraint.ConstraintLayout">
+    android:layout_height="wrap_content">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/bg_reader_menu_cover"
+        app:layout_constraintBottom_toTopOf="@id/view_navigation_bar_placeholder"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_font_size_label"
         style="@style/ReaderSettingsLabelTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="38dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/font_size"
         app:layout_constraintEnd_toStartOf="@+id/bt_font_size_small"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/bt_font_size_small"
@@ -27,10 +33,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/smaller"
+        app:layout_constraintBottom_toBottomOf="@id/tv_font_size_label"
         app:layout_constraintEnd_toStartOf="@+id/bt_font_size_big"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/tv_font_size_label"
-        app:layout_constraintTop_toTopOf="@id/tv_font_size_label" />
+        app:layout_constraintTop_toTopOf="@id/tv_font_size_label"
+        app:layout_constraintWidth_percent="0.3" />
 
     <TextView
         android:id="@+id/bt_font_size_big"
@@ -39,57 +47,180 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="@string/big"
+        app:layout_constraintBottom_toBottomOf="@id/tv_font_size_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/bt_font_size_small"
         app:layout_constraintTop_toTopOf="@id/tv_font_size_label"
-        app:layout_constraintStart_toEndOf="@id/bt_font_size_small" />
+        app:layout_constraintWidth_percent="0.3" />
 
     <TextView
         android:id="@+id/tv_font_label"
         style="@style/ReaderSettingsLabelTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
         android:text="@string/font"
         app:layout_constraintEnd_toStartOf="@+id/bt_font_size_small"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_font_size_label" />
 
-    <TextView
+    <CheckBox
         android:id="@+id/bt_font_complex"
         style="@style/ReaderSettingBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/tv_font_label"
+        android:button="@null"
         android:text="@string/font_complex"
-        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintBottom_toBottomOf="@id/tv_font_label"
         app:layout_constraintEnd_toStartOf="@+id/bt_font_change"
-        app:layout_constraintStart_toEndOf="@id/tv_font_label" />
+        app:layout_constraintStart_toEndOf="@id/tv_font_label"
+        app:layout_constraintTop_toTopOf="@+id/tv_font_label"
+        app:layout_constraintWidth_percent="0.3" />
 
     <TextView
         android:id="@+id/bt_font_change"
         style="@style/ReaderSettingBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginRight="16dp"
         android:text="@string/change_font"
-        app:layout_constraintTop_toTopOf="@+id/tv_font_label"
+        app:layout_constraintBottom_toBottomOf="@id/tv_font_label"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/bt_font_complex" />
+        app:layout_constraintStart_toEndOf="@id/bt_font_complex"
+        app:layout_constraintTop_toTopOf="@+id/tv_font_label"
+        app:layout_constraintWidth_percent="0.3"
+        android:layout_marginEnd="16dp" />
 
 
     <TextView
         android:id="@+id/tv_page_background_label"
         style="@style/ReaderSettingsLabelTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
         android:text="@string/background"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hs_font_color" />
+        app:layout_constraintEnd_toStartOf="@+id/bt_bg_white"
+        app:layout_constraintTop_toBottomOf="@id/tv_font_label" />
+
+    <TextView
+        android:id="@+id/bt_bg_white"
+        style="@style/ReaderSettingBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="@string/charset_ISO_8859_1"
+        app:layout_constraintBottom_toBottomOf="@id/tv_page_background_label"
+        app:layout_constraintEnd_toStartOf="@+id/bt_bg_dark"
+        app:layout_constraintStart_toEndOf="@id/tv_page_background_label"
+        app:layout_constraintTop_toTopOf="@id/tv_page_background_label"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/bt_bg_dark"
+        style="@style/ReaderSettingBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/charset_ISO_8859_1"
+        app:layout_constraintBottom_toBottomOf="@id/tv_page_background_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/bt_bg_white"
+        app:layout_constraintTop_toTopOf="@id/tv_page_background_label"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/tv_charset_label"
+        style="@style/ReaderSettingsLabelTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/encode"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/rg_charset"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_page_background_label" />
+
+    <RadioGroup
+        android:id="@+id/rg_charset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/tv_charset_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_charset_label"
+        app:layout_constraintTop_toTopOf="@id/tv_charset_label">
+
+        <RadioButton
+            android:id="@+id/bt_charset_gbk"
+            style="@style/ReaderSettingBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/charset_gbk"
+            app:layout_constraintBottom_toBottomOf="@id/tv_charset_label"
+            app:layout_constraintEnd_toStartOf="@+id/bt_charset_utf_8"
+            app:layout_constraintStart_toEndOf="@id/tv_charset_label"
+            app:layout_constraintTop_toTopOf="@id/tv_charset_label"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <RadioButton
+            android:id="@+id/bt_charset_utf_8"
+            style="@style/ReaderSettingBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:button="@null"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/charset_utf_8" />
+
+        <RadioButton
+            android:id="@+id/bt_charset_ISO_8859_1"
+            style="@style/ReaderSettingBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:button="@null"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/charset_ISO_8859_1" />
+
+    </RadioGroup>
+
+    <com.zhangqiang.starlightreader.ui.widget.WindowBottomPlaceholderView
+        android:id="@+id/view_navigation_bar_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#000000"
+        app:layout_constraintTop_toBottomOf="@id/rg_charset" />
 
 
-</merge>
+</android.support.constraint.ConstraintLayout>

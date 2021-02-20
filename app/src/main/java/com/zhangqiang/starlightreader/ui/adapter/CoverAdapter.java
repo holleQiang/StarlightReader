@@ -1,14 +1,13 @@
-package com.zhangqiang.slreader.layout;
-
+package com.zhangqiang.starlightreader.ui.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.zhangqiang.slreader.DefaultAdapter;
 import com.zhangqiang.slreader.PageView;
 import com.zhangqiang.slreader.PageViewAdapter;
 import com.zhangqiang.slreader.parser.Book;
@@ -28,14 +27,15 @@ public class CoverAdapter extends CoverLayout.Adapter {
     private Book book;
     private PageView.RecycleBin recycleBin = new PageView.RecycleBin();
     private PositionFactory mPositionFactory;
-    private float mTextSize = 20;
+    private float mTextSize = 25;
     private int mTextColor;
     private int mContentPaddingLeft, mContentPaddingTop, mContentPaddingRight, mContentPaddingBottom;
     private int mTopBarPaddingLeft, mTopBarPaddingTop, mTopBarPaddingRight, mTopBarPaddingBottom;
     private int mBottomBarPaddingLeft, mBottomBarPaddingTop, mBottomBarPaddingRight, mBottomBarPaddingBottom;
     private int mParagraphSpace;
-    private int mTopBarTextSize = 18;
+    private float mTopBarTextSize = 25;
     private int mTopBarTextColor;
+    private int mTopBarHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
     private float mLineHeightMultiple = 1f;
     private int mBottomBarDatePaddingLeft;
     private int mBottomBarTextSize;
@@ -47,6 +47,8 @@ public class CoverAdapter extends CoverLayout.Adapter {
     private int mBottomBarBatteryBodyWidth;
     private int mBottomBarBatteryBodyHeight;
     private int mBottomBarBatteryBodyBorderWidth;
+    private boolean mTextSimple;
+    private Drawable mPageBackground = new ColorDrawable(0xffffffff);
 
     public CoverAdapter(Book book, PositionFactory factory) {
         this.book = book;
@@ -65,17 +67,17 @@ public class CoverAdapter extends CoverLayout.Adapter {
             contentView = new LinearLayout(context);
             contentView.setOrientation(LinearLayout.VERTICAL);
             TopBarView topBarView = new TopBarView(context);
-            LinearLayout.LayoutParams topBarLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams topBarLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             topBarView.setLayoutParams(topBarLayoutParams);
             contentView.addView(topBarView);
             PageView pageView = new PageView(context);
-            LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+            LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
             contentLayoutParams.weight = 1;
             pageView.setLayoutParams(contentLayoutParams);
             contentView.addView(pageView);
 
             BottomBarView bottomBarView = new BottomBarView(context);
-            LinearLayout.LayoutParams bottomBarLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams bottomBarLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             bottomBarView.setLayoutParams(bottomBarLayoutParams);
             contentView.addView(bottomBarView);
         }
@@ -85,6 +87,7 @@ public class CoverAdapter extends CoverLayout.Adapter {
         topBarView.setTextColor(mTopBarTextColor);
         topBarView.setBookName(book.getName());
         topBarView.setPadding(mTopBarPaddingLeft, mTopBarPaddingTop, mTopBarPaddingRight, mTopBarPaddingBottom);
+        topBarView.getLayoutParams().height = mTopBarHeight;
 
         PageView pageView = (PageView) contentView.getChildAt(1);
         pageView.setRecycleBin(recycleBin);
@@ -143,8 +146,7 @@ public class CoverAdapter extends CoverLayout.Adapter {
         bottomBar.getProgressView().setText(paragraphIndex + "/" + paragraphCount);
 
         view = contentView;
-        ViewCompat.setBackground(view,new ColorDrawable(0xffffffff));
-//        view.setDrawingCacheEnable(true);
+        ViewCompat.setBackground(view,mPageBackground);
         return view;
     }
 
@@ -165,10 +167,11 @@ public class CoverAdapter extends CoverLayout.Adapter {
 
     private PageViewAdapter makePageViewAdapter() {
 
-        DefaultAdapter adapter = new DefaultAdapter();
+        DefaultPageViewAdapter adapter = new DefaultPageViewAdapter();
         adapter.setTextSize(mTextSize);
         adapter.setTextColor(mTextColor);
         adapter.setLineHeightMultiple(mLineHeightMultiple);
+        adapter.setTextSimple(mTextSimple);
         return adapter;
     }
 
@@ -231,6 +234,13 @@ public class CoverAdapter extends CoverLayout.Adapter {
     public void setTopBarTextColor(int topBarTextColor) {
         if (mTopBarTextColor != topBarTextColor) {
             this.mTopBarTextColor = topBarTextColor;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTextSimple(boolean textSimple) {
+        if (mTextSimple != textSimple) {
+            mTextSimple = textSimple;
             notifyDataChanged();
         }
     }
@@ -313,6 +323,20 @@ public class CoverAdapter extends CoverLayout.Adapter {
     public void setBottomBarBatteryBodyBorderWidth(int bottomBarBatteryBodyBorderWidth) {
         if (mBottomBarBatteryBodyBorderWidth != bottomBarBatteryBodyBorderWidth) {
             this.mBottomBarBatteryBodyBorderWidth = bottomBarBatteryBodyBorderWidth;
+            notifyDataChanged();
+        }
+    }
+
+    public void setTopBarHeight(int topBarHeight) {
+        if (mTopBarHeight != topBarHeight) {
+            this.mTopBarHeight = topBarHeight;
+            notifyDataChanged();
+        }
+    }
+
+    public void setPageBackground(Drawable pageBackground) {
+        if (this.mPageBackground != pageBackground) {
+            this.mPageBackground = pageBackground;
             notifyDataChanged();
         }
     }
