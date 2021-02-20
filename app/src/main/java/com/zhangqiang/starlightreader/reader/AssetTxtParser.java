@@ -2,7 +2,7 @@ package com.zhangqiang.starlightreader.reader;
 
 import android.content.Context;
 
-import com.zhangqiang.sl.reader.parser.impl.txt.BaseTxtBookParser;
+import com.zhangqiang.slreader.parser.impl.txt.BaseTxtBookParser;
 
 import java.io.IOException;
 import java.io.InputStream;

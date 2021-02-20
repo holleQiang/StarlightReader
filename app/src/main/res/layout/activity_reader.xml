@@ -10,8 +10,8 @@
         android:layout_height="match_parent"
         tools:openDrawer="start">
 
-        <com.zhangqiang.sl.android.AndroidSLView
-            android:id="@+id/sl_view"
+        <com.zhangqiang.slreader.view.CoverLayout
+            android:id="@+id/cover_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

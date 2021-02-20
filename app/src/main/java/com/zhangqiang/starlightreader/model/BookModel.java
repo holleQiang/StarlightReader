@@ -2,9 +2,9 @@ package com.zhangqiang.starlightreader.model;
 
 import android.content.Context;
 
-import com.zhangqiang.sl.reader.parser.Book;
-import com.zhangqiang.sl.reader.parser.BookParser;
-import com.zhangqiang.sl.reader.parser.impl.txt.TxtBookParser;
+import com.zhangqiang.slreader.parser.Book;
+import com.zhangqiang.slreader.parser.BookParser;
+import com.zhangqiang.slreader.parser.impl.txt.TxtBookParser;
 import com.zhangqiang.starlightreader.reader.AssetTxtParser;
 
 import io.reactivex.Observable;
@@ -18,7 +18,7 @@ public class BookModel {
         return parseBook(new TxtBookParser(charset, filePath));
     }
 
-    public static Observable<Book> parsetAssetBook(Context context,String fileName,String charset){
+    public static Observable<Book> parseAssetBook(Context context, String fileName, String charset){
         return parseBook(new AssetTxtParser(charset,context,fileName));
     }
 

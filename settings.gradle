@@ -1,1 +1,3 @@
-include ':app', ':framework', ':reader', ':android-runtime', ':java-runtime'
+include ':reader_android'
+include ':app'
+        //':framework', ':reader', ':android-runtime', ':java-runtime'

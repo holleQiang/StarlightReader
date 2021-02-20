@@ -1,7 +1,7 @@
 package com.zhangqiang.starlightreader.model;
 
 import com.zhangqiang.fastdatabase.dao.Dao;
-import com.zhangqiang.sl.reader.position.TextWordPosition;
+import com.zhangqiang.slreader.position.TextWordPosition;
 import com.zhangqiang.starlightreader.db.AppDBHelper;
 import com.zhangqiang.starlightreader.db.ReadRecordEntity;
 

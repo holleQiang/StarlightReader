@@ -8,11 +8,13 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhangqiang.celladapter.CellRVAdapter;
@@ -21,17 +23,13 @@ import com.zhangqiang.celladapter.cell.MultiCell;
 import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 import com.zhangqiang.instancerestore.annotations.Instance;
-import com.zhangqiang.sl.android.ISLView;
-import com.zhangqiang.sl.android.image.AndroidDrawable;
-import com.zhangqiang.sl.framework.layout.SLLinearLayout;
-import com.zhangqiang.sl.framework.view.SLView;
-import com.zhangqiang.sl.framework.layout.CoverLayout;
-import com.zhangqiang.sl.reader.layout.CoverAdapter;
-import com.zhangqiang.sl.reader.page.PageView;
-import com.zhangqiang.sl.reader.parser.Book;
-import com.zhangqiang.sl.reader.parser.impl.txt.Chapter;
-import com.zhangqiang.sl.reader.parser.impl.txt.TxtBook;
-import com.zhangqiang.sl.reader.position.TextWordPosition;
+import com.zhangqiang.slreader.PageView;
+import com.zhangqiang.slreader.layout.CoverAdapter;
+import com.zhangqiang.slreader.parser.Book;
+import com.zhangqiang.slreader.parser.impl.txt.Chapter;
+import com.zhangqiang.slreader.parser.impl.txt.TxtBook;
+import com.zhangqiang.slreader.position.TextWordPosition;
+import com.zhangqiang.slreader.view.CoverLayout;
 import com.zhangqiang.starlightreader.R;
 import com.zhangqiang.starlightreader.base.ui.BaseActivity;
 import com.zhangqiang.starlightreader.extend.BaseObserver;
@@ -49,7 +47,6 @@ import java.util.Locale;
 public class ReaderActivity extends BaseActivity {
 
 
-    private ISLView mSLView;
     @Instance
     String bookPath;
     private CoverLayout mCoverLayout;
@@ -68,8 +65,6 @@ public class ReaderActivity extends BaseActivity {
     @Override
     public void initViews() {
         super.initViews();
-        mSLView = findViewById(R.id.sl_view);
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setKeepScreenOn(true);
 
@@ -79,13 +74,11 @@ public class ReaderActivity extends BaseActivity {
         mChapterAdapter = new CellRVAdapter();
         chapterRV.setAdapter(mChapterAdapter);
 
-        mCoverLayout = new CoverLayout(mSLView.getSLContext());
-        mSLView.setContentView(mCoverLayout);
+        mCoverLayout = findViewById(R.id.cover_layout);
         initCoverLayout();
 
 
     }
-
 
 
     @Override
@@ -148,7 +141,7 @@ public class ReaderActivity extends BaseActivity {
                 .subscribe(new BaseObserver<Book>() {
 
                     @Override
-                    public void onNext(Book book) {
+                    public void onNext(@NonNull Book book) {
                         mBook = book;
 
                         if (book instanceof TxtBook) {
@@ -183,18 +176,18 @@ public class ReaderActivity extends BaseActivity {
             }
         });
         mAdapter.setTextColor(ReadSettingsModel.getTxtColor());
-        mAdapter.setTextSize(ViewUtils.spToPx(ReaderActivity.this, ReadSettingsModel.getTxtSize()));
+        mAdapter.setTextSize(ReadSettingsModel.getTxtSize());
         int hPadding = ViewUtils.dpToPx(this, 16);
         int vPadding = ViewUtils.dpToPx(this, 10);
         mAdapter.setContentPadding(hPadding, 0, hPadding, 0);
         mAdapter.setTopBarPadding(hPadding, vPadding, hPadding, vPadding);
         mAdapter.setTopBarTextColor(0xff666666);
         mAdapter.setParagraphSpace(ViewUtils.dpToPx(this, 5));
-        mAdapter.setTopBarTextSize(ViewUtils.spToPx(this, 15));
+        mAdapter.setTopBarTextSize(15);
         mAdapter.setLineHeightMultiple(1.2f);
         mAdapter.setBottomBarPadding(hPadding, vPadding, hPadding, vPadding);
         mAdapter.setBottomBarTextColor(0xff666666);
-        mAdapter.setBottomBarTextSize(ViewUtils.spToPx(this, 15));
+        mAdapter.setBottomBarTextSize(15);
         mAdapter.setBottomBarDatePaddingLeft(ViewUtils.dpToPx(this, 5));
         mAdapter.setBottomBarBattery(getBatteryLevel());
         mAdapter.setBottomBarBatteryColor(0xff666666);
@@ -239,7 +232,7 @@ public class ReaderActivity extends BaseActivity {
                     @Override
                     public void onNext(Float aFloat) {
                         if (mAdapter != null) {
-                            mAdapter.setTextSize(ViewUtils.spToPx(ReaderActivity.this, aFloat));
+                            mAdapter.setTextSize(aFloat);
                         }
                     }
 
@@ -289,28 +282,28 @@ public class ReaderActivity extends BaseActivity {
 
     private void initCoverLayout() {
 
-        int shadowWidth = ViewUtils.dpToPx(this,25);
-        AndroidDrawable leftShadowDrawable = new AndroidDrawable(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{0x00000000, 0x46000000}));
+        int shadowWidth = ViewUtils.dpToPx(this, 25);
+        GradientDrawable leftShadowDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{0x00000000, 0x46000000});
         leftShadowDrawable.setBounds(0, 0, shadowWidth, 0);
         mCoverLayout.setLeftShadowDrawable(leftShadowDrawable);
 
-        AndroidDrawable rightShadowDrawable = new AndroidDrawable(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, new int[]{0x00000000, 0x46000000}));
+        GradientDrawable rightShadowDrawable = new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, new int[]{0x00000000, 0x46000000});
         rightShadowDrawable.setBounds(0, 0, shadowWidth, 0);
         mCoverLayout.setRightShadowDrawable(rightShadowDrawable);
 
         initSettings();
         mCoverLayout.setOnPageChangeListener(new CoverLayout.OnPageChangeListener() {
             @Override
-            public void onPageChange(SLView view) {
-                if (view instanceof SLLinearLayout) {
-                    PageView pageView = (PageView) ((SLLinearLayout) view).getChildAt(1);
+            public void onPageChange(View view) {
+                if (view instanceof LinearLayout) {
+                    PageView pageView = (PageView) ((LinearLayout) view).getChildAt(1);
                     TextWordPosition startPosition = pageView.getStartPosition();
                     ReadRecordModel.updateReadPosition(bookPath, startPosition);
                 }
             }
 
             @Override
-            public void onPageCenterClick(SLView view) {
+            public void onPageCenterClick(View view) {
                 ReadSettingsDialog dialog = ReadSettingsDialog.newInstance();
                 dialog.show(getSupportFragmentManager(), "reader_settings");
             }

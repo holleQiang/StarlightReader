@@ -1,0 +1,176 @@
+02-03 11:02:46.230 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb081dd]On-SurfaceDestroy-run
+02-03 11:02:46.241 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb081dd]On-SurfaceDestroy-ext
+02-03 11:02:46.450 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 550056
+02-03 11:02:46.451 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:@cb081dd]usrstartaa-Qkm-Pause-run
+02-03 11:02:46.451 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-isinplayeback-state-run
+02-03 11:02:46.451 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:@cb081dd]usrstartaa-Qkm-Pause-call-player-pause
+02-03 11:02:46.452 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:@cb081dd]usrstartaa-Qkm-Pause-ext
+02-03 11:02:46.454 14462-14462/com.jifen.qukan I/qkply-PlyVw: reportWhenStop-mIsSdkSelfReportPlay:true
+02-03 11:02:46.456 14462-14462/com.jifen.qukan I/qkply-PlyVw: qs: {"p2p":1,"result":"(type:1,res:0)","videoTabType":2,"p2pver":"qtt_3.0.2.0","ab":15,"vid":"h265","vdec":"1","fmt":"1","prepared":1,"surf":0,"mpstate":"5","qkstate":"STATE_PAUSED","cachenble":1,"cachet":0,"pre":20,"start":27,"dnstart":"6.2","dnscost":"10","dnsflag":"0","tcpcost":"12.2","httpcost":"27.1","avinput":"834","avfind":"7","avrecv":"805","pkt":"876","draw":"897","switched":"0","backupCdn":"0","p2p_url":"http:\/\/v4.qutoutiao.net\/toutiao_video_zdgq_online_self\/3623faea21c8be34f5b47bdd0550842d\/hld.mp4","p2p_dnstype":1,"p2p_cdnip":"101.227.25.209","p2p_down_cdn":2621440,"p2p_dnscost":0,"p2p_connectcost":9,"p2p_headercost":12,"p2p_config":"0","httpcode":"206","cname":"127.0.0.1","connectip":"127.0.0.1","cdnip":"101.227.25.209","cdnid":"ali","cdnhy":"0","dur":"863","bps":"170","ver":"4.1-0105-1730","ijkver":"2020-1212-1920-inner","insucc":1}
+02-03 11:02:46.464 14462-14462/com.jifen.qukan I/qkply-PlyVw: report-cost1:8, cost2:10
+02-03 11:02:46.465 14462-14462/com.jifen.qukan I/qkply-PlyVw: sdk report: {project_page=2001, extra={"url":"http:\/\/v4.qutoutiao.net\/toutiao_video_zdgq_online_self\/3623faea21c8be34f5b47bdd0550842d\/hld.mp4","wh":"640x360","total_time":863131,"render_use_time0":900,"render_use_time":919,"max_play_pos":550056,"watch_time":34931,"error_code":0,"seek_at_start":0,"resurf":0,"surftoken":60,"p2p_report":{"p2pType":1,"isP2PFailed":0},"sdk2":{"p2p":1,"result":"(type:1,res:0)","videoTabType":2,"p2pver":"qtt_3.0.2.0","ab":15,"vid":"h265","vdec":"1","fmt":"1","prepared":1,"surf":0,"mpstate":"5","qkstate":"STATE_PAUSED","cachenble":1,"cachet":0,"pre":20,"start":27,"dnstart":"6.2","dnscost":"10","dnsflag":"0","tcpcost":"12.2","httpcost":"27.1","avinput":"834","avfind":"7","avrecv":"805","pkt":"876","draw":"897","switched":"0","backupCdn":"0","p2p_url":"http:\/\/v4.qutoutiao.net\/toutiao_video_zdgq_online_self\/3623faea21c8be34f5b47bdd0550842d\/hld.mp4","p2p_dnstype":1,"p2p_cdnip":"101.227.25.209","p2p_down_cdn":2621440,"p2p_dnscost":0,"p2p_connectcost":9,"p2p_headercost":12,"p2p_config":"0","httpcode":"206","cname":"127.0.0.1","connectip":"127.0.0.1","cdnip":"101.227.25.209","cdnid":"ali","cdnhy":"0","dur":"863","bps":"170","ver":"4.1-0105-1730","ijkver":"2020-1212-1920-inner","insucc":1,"playertype":2},"view_type":0,"view_status":0,"gb_ply_cnt":2,"start_play":{"bef_vid_comp":"867","open_vid_comp":"4","vid_thd_start":"0","vid_thd_wait":"0","vpkt_input":"0","vframe_decoded":"19","vframe_render":"6","vframe_pkt_cnt":"5","find_strm_type":"0","find_strm":"8","vdec_ret":"0","vdec_cnt":"1","vdec_drcnt":"0","vdec_que":"queue_info pictq: 1, audioq: 12772 2182, videoq: 61160 2520"}}, project=qtt, project_ext_info={}}
+02-03 11:02:46.465 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:@cb081dd]Qkm-Reset-run
+02-03 11:02:46.467 14462-14462/com.jifen.qukan I/qkply-PlyVw: xunlei P2PStopTask--> XYVodSDK STOP_TASK url: http://v4.qutoutiao.net/toutiao_video_zdgq_online_self/3623faea21c8be34f5b47bdd0550842d/hld.mp4
+02-03 11:02:46.467 14462-14462/com.jifen.qukan I/qkply-PlyVw: reset-player-run
+02-03 11:02:46.467 14462-14462/com.jifen.qukan I/qkply-PlyVw: reset-player-ijkmp:null
+02-03 11:02:46.468 14462-14462/com.jifen.qukan I/qkply-PlyVw: reset-player-ext
+02-03 11:02:46.469 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:@cb081dd]Qkm-Reset-ext:, cost1:1, 2:2, 3:3, 4:3
+02-03 11:02:46.469 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-Release-run
+02-03 11:02:46.469 14462-14462/com.jifen.qukan I/qkply-PlyVw: player destroyed current player_count: 1, video_url: null, self: com.jifen.qukan.videoplayer.qk.QkRenderView{e092b1c VFE...... .......D 0,0-1080,810}
+02-03 11:02:46.471 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:null][QkmDestroy]run
+02-03 11:02:46.471 14462-14462/com.jifen.qukan I/qkply-PlyVw: reportWhenStop-mIsSdkSelfReportPlay:false
+02-03 11:02:46.473 14462-14462/com.jifen.qukan W/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:null][destroyView]run
+02-03 11:02:46.473 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:null][destroyView]mRenderView:nullcost1:1, 2:1, 3:1, 4:1
+02-03 11:02:46.475 14462-14462/com.jifen.qukan W/qkply-PlyVw: [c:{e092b1c VFE ID 0,0-1080,810}, p:null][destroyPlayer]run
+02-03 11:02:46.480 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE ID 0,0-1080,810}, p:null][destroyPlayer]ext, cost1:0, 2:0, 3:0, 4:5
+02-03 11:02:46.480 14462-14462/com.jifen.qukan I/qkply-PlyVw: reset-player-run
+02-03 11:02:46.480 14462-14462/com.jifen.qukan I/qkply-PlyVw: reset-player-ijkmp:null
+02-03 11:02:46.481 14462-14462/com.jifen.qukan I/qkply-PlyVw: reset-player-ext
+02-03 11:02:46.482 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{e092b1c VFE D 0,0-1080,810}, p:null][QkmDestroy]ext, cost1:2, 2:2, 3:4, 4:13
+02-03 11:02:46.482 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-Release-ext
+02-03 11:02:46.484 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-PlayerView-1-run
+02-03 11:02:46.485 14462-14462/com.jifen.qukan I/qkply-PlyVw: player created current player_count: 2, self: com.jifen.qukan.videoplayer.qk.QkRenderView{ef73f4f V.E...... ......I. 0,0-0,0}
+02-03 11:02:46.485 14462-14462/com.jifen.qukan I/qkply-PlyVw: QkmSetVideoTabType enter: videoTabType = 2
+02-03 11:02:46.488 14462-14462/com.jifen.qukan I/qkply-PlyVw: QkmSetVideoTabType: libPath = /data/user/0/com.jifen.qukan/files/so_libs/3.10.26.900.0203.1056/B02D3ACF65DCFF8779925B5EA13E2BC1.so
+02-03 11:02:46.488 14462-14462/com.jifen.qukan I/qkply-PlyVw: QkmInitP2P enter: mP2PType = 1
+02-03 11:02:46.488 14462-14462/com.jifen.qukan I/qkply-PlyVw: p2p enabled, p2p type: 1
+02-03 11:02:46.489 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VE I 0,0-0,0}, p:null]Qkm-SetLoop-run:false
+02-03 11:02:46.490 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VE I 0,0-0,0}, p:null]Qkm-Init-Player-run
+02-03 11:02:46.491 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VE I 0,0-0,0}, p:null][initView]run
+02-03 11:02:46.491 14462-14462/com.jifen.qukan I/qkply-PlyVw: init-render-view-run
+02-03 11:02:46.491 14462-14462/com.jifen.qukan I/qkply-PlyVw: QkmSetAspectRatio: 1
+02-03 11:02:46.492 14462-14462/com.jifen.qukan I/qkply-PlyVw: init-render-view-ext, cost1:0,2:0,3:1,4:1,5:1,6:1
+02-03 11:02:46.492 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VE I 0,0-0,0}, p:null][initView]ext, cost1:0, 2:1, 3:1, 4:1
+02-03 11:02:46.492 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VE I 0,0-0,0}, p:null]Qkm-Init-Player-ext
+02-03 11:02:46.492 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-OnInfoListener-ext
+02-03 11:02:46.492 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-OnErrorListener-ext
+02-03 11:02:46.492 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-set-playermode:PLAYER_MODE_MP4
+02-03 11:02:46.493 14462-14462/com.jifen.qukan I/qkply-PlyVw: QkmSetAspectRatio: 1
+02-03 11:02:46.493 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-set-aspect-ratio:AR_ASPECT_FILL_PARENT
+02-03 11:02:46.495 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-2-json-run, cachetm:0, start:550056
+02-03 11:02:49.363 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-1-json-h265Switch: true
+02-03 11:02:49.363 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-1-json-user_format: ld
+02-03 11:02:49.363 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-1-json-run, path:https://v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4, cachetm:0
+02-03 11:02:49.364 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-1-run, path:https://v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4, old:null, cachetm:0, preload:false
+02-03 11:02:49.364 14462-14462/com.jifen.qukan I/qkply-PlyVw: mEnableP2P = true
+02-03 11:02:49.364 14462-14462/com.jifen.qukan I/qkply-PlyVw: xunlei origin url：http://v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4
+02-03 11:02:49.364 14462-14462/com.jifen.qukan I/qkply-PlyVw: xunlei get p2p url consume time: 0ms
+02-03 11:02:49.364 14462-14462/com.jifen.qukan I/qkply-PlyVw: xunlei new p2p url：http://127.0.0.1:2018/v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4?xymod=1
+02-03 11:02:49.365 14462-14462/com.jifen.qukan I/qkply-PlyVw: p2p return mP2PUrl = http://127.0.0.1:2018/v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4?xymod=1
+02-03 11:02:49.365 14462-14462/com.jifen.qukan I/qkply-PlyVw: QkmPreload() --> path = http://127.0.0.1:2018/v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4?xymod=1
+02-03 11:02:49.365 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-set-video-url-run, uri:async:ijkio:cache:ffio:http://127.0.0.1:2018/v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4?xymod=1
+02-03 11:02:49.365 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]In-init-Player-run
+02-03 11:02:49.366 14462-14462/com.jifen.qukan W/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null][destroyPlayer]run
+02-03 11:02:49.368 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null][destroyPlayer]ext, cost1:0, 2:0, 3:0, 4:2
+02-03 11:02:49.371 14462-14462/com.jifen.qukan I/qkply-PlyVw: set option of dns cache
+02-03 11:02:49.371 14462-14462/com.jifen.qukan I/qkply-PlyVw: user_agent: QkmPlayer-Android/4.1-0105-1730
+02-03 11:02:49.372 14462-14462/com.jifen.qukan W/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:@cb08cd1], mLogLevel:3
+02-03 11:02:49.373 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:@cb08cd1]In-init-Player-settingModel:false
+02-03 11:02:49.374 14462-14462/com.jifen.qukan I/qkply-PlyVw: initPlayer mMediaPlayer.setVolume:1.0
+02-03 11:02:49.374 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:@cb08cd1]In-init-Player-, ext, cost1:3,2:7,3:8,4:9,5:9
+02-03 11:02:49.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-PrepareAsync-ext
+02-03 11:02:49.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-In-open-video-ext
+02-03 11:02:49.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-set-video-url-ext, cost:14
+02-03 11:02:49.380 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-1-ext
+02-03 11:02:49.380 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-1-json-ext
+02-03 11:02:49.380 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:null]Qkm-Preload-2-json-ext ret: 0
+02-03 11:02:49.380 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:@cb08cd1]usrstartaa-Qkm-Start-run
+02-03 11:02:49.382 14462-14462/com.jifen.qukan I/qkply-PlyVw: player start current player_count: 2, video_url: http://v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4, self: com.jifen.qukan.videoplayer.qk.QkRenderView{ef73f4f VFE...... ......I. 0,0-0,0}
+02-03 11:02:49.389 14462-14462/com.jifen.qukan I/qkply-PlyVw: sdk report: {project_page=2001, extra={"url":"http:\/\/v4.qutoutiao.net\/toutiao_video_zdgq_online_self\/a66473b7cdd351e4ad0f09894a24d470\/hld.mp4","playertype":2}, project=qtt, project_ext_info={}}
+02-03 11:02:49.389 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-isinplayeback-state-run
+02-03 11:02:49.389 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:@cb08cd1][qkm-start]usrstartaa-in-Start-run, allow:false, isSfcReady:false, st:STATE_PREPARING,pos:0,innerRetryPlay:false
+02-03 11:02:49.390 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:@cb08cd1][qkm-start]usrstartaa-in-Start-ext
+02-03 11:02:49.390 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE I 0,0-0,0}, p:@cb08cd1]usrstartaa-Qkm-Start-ext
+02-03 11:02:49.435 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]On-SurfaceCreate-run, render:com.qukan.media.player.renderview.TextureRenderView{fc2533c V.ED..C.. ........ 0,0-1080,810}
+02-03 11:02:49.435 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]On-SurfaceCreate-(w*h):1080*810, holder:com.qukan.media.player.renderview.TextureRenderView$InternalSurfaceHolder@781e8c5
+02-03 11:02:49.435 14462-14462/com.jifen.qukan W/qkply-PlyVw: bind-SurfaceHoldToPlayer-run holder: com.qukan.media.player.renderview.TextureRenderView$InternalSurfaceHolder@781e8c5, mediaPlayer: tv.danmaku.ijk.media.player.IjkMediaPlayer@cb08cd1
+02-03 11:02:49.436 14462-14462/com.jifen.qukan W/qkply-PlyVw: bind-SurfaceHoldToPlayer-ext
+02-03 11:02:49.436 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]On-SurfaceCreate-ext
+02-03 11:02:50.308 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]on-prepared-run, plystat:STATE_PREPARING,preload:true,reconnect:false,pos:0,usrstart:true,innerRetryPlay:false
+02-03 11:02:50.309 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-isinplayeback-state-run
+02-03 11:02:50.309 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1][on-prepared]usrstartaa-in-Start-run, allow:true, isSfcReady:true, st:STATE_PREPARED,pos:0,innerRetryPlay:false
+02-03 11:02:50.309 14462-14462/com.jifen.qukan W/qkply-PlyVw: bind-SurfaceHoldToPlayer-run holder: com.qukan.media.player.renderview.TextureRenderView$InternalSurfaceHolder@781e8c5, mediaPlayer: tv.danmaku.ijk.media.player.IjkMediaPlayer@cb08cd1
+02-03 11:02:50.311 14462-14462/com.jifen.qukan W/qkply-PlyVw: bind-SurfaceHoldToPlayer-ext
+02-03 11:02:50.311 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1][on-prepared]usrstartaa-in-Start-vid-path:http://v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4
+02-03 11:02:50.314 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1][on-prepared]usrstartaa-in-Start-ext
+02-03 11:02:50.314 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]on-prepared-ext
+02-03 11:02:50.343 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:1202(MEDIA_INFO_PLAY_DATA_DNS_PARSER_TM), starttime:10006, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.344 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:1204(MEDIA_INFO_PLAY_DATA_CONNECT_TM), starttime:10006, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.345 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10006(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.345 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：60
+02-03 11:02:50.345 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:60, str:INFO_FIND_STREAM_INFO
+02-03 11:02:50.346 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:1206(MEDIA_INFO_PLAY_DATA_FIRST_PKG_RCV_TM), starttime:10006, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.358 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10006(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.358 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：60
+02-03 11:02:50.358 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:60, str:INFO_FIND_STREAM_INFO
+02-03 11:02:50.377 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10001(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.377 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：43
+02-03 11:02:50.377 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:43, str:INFO_VIDEO_ROTATION_CHANGED
+02-03 11:02:50.377 14462-14462/com.jifen.qukan I/qkply-PlyVw: on-VideoSizeChanged(w*h):640*360, sar_num:1, sar_den:1
+02-03 11:02:50.378 14462-14462/com.jifen.qukan I/qkply-PlyVw: QkmSetAspectRatio: 1
+02-03 11:02:50.378 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-set-aspect-ratio:AR_ASPECT_FILL_PARENT
+02-03 11:02:50.378 14462-14462/com.jifen.qukan I/qkply-PlyVw: on-VideoSizeChanged(w*h):640*360, sar_num:1, sar_den:1
+02-03 11:02:50.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10001(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：43
+02-03 11:02:50.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:43, str:INFO_VIDEO_ROTATION_CHANGED
+02-03 11:02:50.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10001(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：43
+02-03 11:02:50.379 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:43, str:INFO_VIDEO_ROTATION_CHANGED
+02-03 11:02:50.380 14462-14462/com.jifen.qukan I/qkply-PlyVw: sdk-seekto-complete:STATE_PLAYING false
+02-03 11:02:50.380 14462-14462/com.jifen.qukan I/qkply-PlyVw: seekto:0, play-state:STATE_PLAYING, duration:931746
+02-03 11:02:50.421 14462-14462/com.jifen.qukan I/qkply-PlyVw: render-cbk--On-SurfaceChange-sdk--doMeasure: 1440 810 0
+02-03 11:02:50.492 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:1208(MEDIA_INFO_PLAY_DATA_FIRST_VID_FRAME_RCV_TM), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.493 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:7(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.494 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：458752
+02-03 11:02:50.494 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:458752, str:unknow:458752
+02-03 11:02:50.811 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10004(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.811 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：40
+02-03 11:02:50.811 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:40, str:INFO_VIDEO_DECODED_START
+02-03 11:02:50.812 14462-14462/com.jifen.qukan I/qkply-PlyVw: on-VideoSizeChanged(w*h):640*360, sar_num:1, sar_den:1
+02-03 11:02:50.812 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10004(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.812 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：40
+02-03 11:02:50.812 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:40, str:INFO_VIDEO_DECODED_START
+02-03 11:02:50.812 14462-14462/com.jifen.qukan I/qkply-PlyVw: on-VideoSizeChanged(w*h):640*360, sar_num:1, sar_den:1
+02-03 11:02:50.813 14462-14462/com.jifen.qukan I/qkply-PlyVw: on-VideoSizeChanged(w*h):640*360, sar_num:1, sar_den:1
+02-03 11:02:50.899 14462-16744/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:1210(MEDIA_INFO_PLAY_DATA_FIRST_VID_FRAME_RENDER_TM), starttime:1626257, costtime:535168, state:STATE_PLAYING
+02-03 11:02:50.900 14462-16744/com.jifen.qukan I/qkply-PlyVw: render-start, post
+02-03 11:02:50.901 14462-16744/com.jifen.qukan I/qkply-PlyVw: qs: {}
+02-03 11:02:50.907 14462-16744/com.jifen.qukan I/qkply-PlyVw: sdk report: {project_page=2001, extra={"url":"http:\/\/v4.qutoutiao.net\/toutiao_video_zdgq_online_self\/a66473b7cdd351e4ad0f09894a24d470\/hld.mp4","wh":"640x360","total_time":931746,"render_use_time0":1520,"render_use_time":0,"max_play_pos":550056,"watch_time":0,"error_code":0,"seek_at_start":550056,"resurf":0,"surftoken":55,"p2p_report":{"p2pType":1,"isP2PFailed":0},"sdk2":"{\"p2p\":1,\"result\":\"(type:1,res:0)\",\"videoTabType\":2,\"p2pver\":\"qtt_3.0.2.0\",\"ab\":15,\"vid\":\"h265\",\"vdec\":\"1\",\"fmt\":\"1\",\"prepared\":1,\"surf\":1,\"mpstate\":\"4\",\"qkstate\":\"STATE_PLAYING\",\"cachenble\":1,\"cachet\":0,\"pre\":11,\"start\":16,\"dnstart\":\"3.2\",\"dnscost\":\"5\",\"dnsflag\":\"0\",\"tcpcost\":\"6.2\",\"httpcost\":\"31.1\",\"avinput\":\"910\",\"avfind\":\"7\",\"avrecv\":\"902\",\"pkt\":\"1093\",\"draw\":\"1626\",\"switched\":\"0\",\"backupCdn\":\"0\",\"httpcode\":\"206\",\"cname\":\"127.0.0.1\",\"connectip\":\"127.0.0.1\",\"cdnip\":\"101.227.25.209\",\"cdnid\":\"ali\",\"cdnhy\":\"0\",\"dur\":\"931\",\"bps\":\"221\",\"ver\":\"4.1-0105-1730\",\"insucc\":1,\"playertype\":2,\"ijkloaderror\":0}","view_type":0,"view_status":0,"gb_ply_cnt":2,"start_play":{"bef_vid_comp":"973","open_vid_comp":"10","vid_thd_start":"1","vid_thd_wait":"0","vpkt_input":"109","vframe_decoded":"319","vframe_render":"105","vframe_pkt_cnt":"60","find_strm_type":"0","find_strm":"7","vdec_ret":"0","vdec_cnt":"51","vdec_drcnt":"0","vdec_que":"queue_info pictq: 3, audioq: 5033 882, videoq: 42327 1200"}}, project=qtt, project_ext_info={}}
+02-03 11:02:50.908 14462-16744/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1][render], url:http://v4.qutoutiao.net/toutiao_video_zdgq_online_self/a66473b7cdd351e4ad0f09894a24d470/hld.mp4, ip:1.1.1.1, dns-parser:10, connect:10, first[*pkg-rcv:10, *vid-rcv:0, *vid-render:1626, *player-type:2, *player-load-error:0]
+02-03 11:02:50.908 14462-16744/com.jifen.qukan I/qkply-PlyVw: p2p failed: 0
+02-03 11:02:50.909 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10008(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.909 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：42
+02-03 11:02:50.909 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:42, str:INFO_VIDEO_SEEK_RENDERING_START
+02-03 11:02:50.910 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10008(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:50.910 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：42
+02-03 11:02:50.910 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:42, str:INFO_VIDEO_SEEK_RENDERING_START
+02-03 11:02:50.911 14462-14462/com.jifen.qukan I/qkply-PlyVw: qs: {}
+02-03 11:02:50.917 14462-14462/com.jifen.qukan I/qkply-PlyVw: sdk report: {project_page=2001, extra={"url":"http:\/\/v4.qutoutiao.net\/toutiao_video_zdgq_online_self\/a66473b7cdd351e4ad0f09894a24d470\/hld.mp4","wh":"640x360","total_time":931746,"render_use_time0":1520,"render_use_time":1530,"max_play_pos":550056,"watch_time":0,"error_code":0,"seek_at_start":550056,"resurf":0,"surftoken":55,"p2p_report":{"p2pType":1,"isP2PFailed":0},"sdk2":"{\"p2p\":1,\"result\":\"(type:1,res:0)\",\"videoTabType\":2,\"p2pver\":\"qtt_3.0.2.0\",\"ab\":15,\"vid\":\"h265\",\"vdec\":\"1\",\"fmt\":\"1\",\"prepared\":1,\"surf\":1,\"mpstate\":\"4\",\"qkstate\":\"STATE_PLAYING\",\"cachenble\":1,\"cachet\":0,\"pre\":11,\"start\":16,\"dnstart\":\"3.2\",\"dnscost\":\"5\",\"dnsflag\":\"0\",\"tcpcost\":\"6.2\",\"httpcost\":\"31.1\",\"avinput\":\"910\",\"avfind\":\"7\",\"avrecv\":\"902\",\"pkt\":\"1093\",\"draw\":\"1626\",\"switched\":\"0\",\"backupCdn\":\"0\",\"httpcode\":\"206\",\"cname\":\"127.0.0.1\",\"connectip\":\"127.0.0.1\",\"cdnip\":\"101.227.25.209\",\"cdnid\":\"ali\",\"cdnhy\":\"0\",\"dur\":\"931\",\"bps\":\"221\",\"ver\":\"4.1-0105-1730\",\"insucc\":1,\"playertype\":2,\"ijkloaderror\":0}","view_type":0,"view_status":0,"gb_ply_cnt":2,"start_play":{"bef_vid_comp":"973","open_vid_comp":"10","vid_thd_start":"1","vid_thd_wait":"0","vpkt_input":"109","vframe_decoded":"319","vframe_render":"105","vframe_pkt_cnt":"60","find_strm_type":"0","find_strm":"7","vdec_ret":"0","vdec_cnt":"51","vdec_drcnt":"0","vdec_que":"queue_info pictq: 3, audioq: 5033 882, videoq: 42327 1200"}}, project=qtt, project_ext_info={}}
+02-03 11:02:50.918 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-set-volume:1.0
+02-03 11:02:50.919 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 550056
+02-03 11:02:50.952 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-set-volume:1.0
+02-03 11:02:50.954 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 550113
+02-03 11:02:50.975 14462-16289/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1]Qkm-isPlaying:false-->true
+02-03 11:02:50.977 14462-16289/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 550113
+02-03 11:02:51.415 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10008(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:51.415 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：42
+02-03 11:02:51.416 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:42, str:INFO_VIDEO_SEEK_RENDERING_START
+02-03 11:02:51.416 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:no, p:@cb08cd1]1====msgId:10008(UNKNOW-MSG), starttime:0, costtime:0, state:STATE_PLAYING
+02-03 11:02:51.416 14462-14462/com.jifen.qukan I/qkply-PlyVw: on=msgId：42
+02-03 11:02:51.416 14462-14462/com.jifen.qukan I/qkply-PlyVw: curEvent:42, str:INFO_VIDEO_SEEK_RENDERING_START
+02-03 11:02:51.416 14462-14462/com.jifen.qukan I/qkply-PlyVw: onAudioFocusChange:-1
+02-03 11:02:51.417 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 550410
+02-03 11:02:51.476 14462-16289/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 550511
+02-03 11:02:51.482 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 550511
+02-03 11:02:51.975 14462-16289/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 551027
+02-03 11:02:52.022 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 551027
+02-03 11:02:52.474 14462-16289/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 551544
+02-03 11:02:52.975 14462-16289/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 551947
+02-03 11:02:53.144 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 552154
+02-03 11:02:53.173 14462-14462/com.jifen.qukan I/qkply-PlyVw: XYVodSDK set current player pos, mCurrentPos = 552154
+02-03 11:02:53.174 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1]usrstartaa-Qkm-Pause-run
+02-03 11:02:53.175 14462-14462/com.jifen.qukan I/qkply-PlyVw: Qkm-isinplayeback-state-run
+02-03 11:02:53.175 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1]usrstartaa-Qkm-Pause-call-player-pause
+02-03 11:02:53.176 14462-14462/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1]usrstartaa-Qkm-Pause-ext
+02-03 11:02:53.474 14462-16289/com.jifen.qukan I/qkply-PlyVw: [c:{ef73f4f VFE  0,0-1080,810}, p:@cb08cd1]Qkm-isPlaying:true-->false
+
