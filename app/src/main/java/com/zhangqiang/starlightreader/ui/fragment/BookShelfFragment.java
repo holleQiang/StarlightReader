@@ -13,6 +13,8 @@ import com.zhangqiang.starlightreader.utils.RxJavaUtils;
 
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
+
 public class BookShelfFragment extends BaseFragment {
 
     private CellRVAdapter mAdapter;
@@ -32,14 +34,10 @@ public class BookShelfFragment extends BaseFragment {
         BookShelfModel.getAllBookShelfs().compose(RxJavaUtils.applyIOMainSchedules())
                 .compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<List<BookShelfBean>>() {
-                    @Override
-                    public void onNext(List<BookShelfBean> bookShelfBeans) {
-
-                    }
 
                     @Override
-                    public void onError(Throwable e) {
-
+                    protected boolean handNext(@NonNull List<BookShelfBean> bookShelfBeans) {
+                        return false;
                     }
                 });
     }

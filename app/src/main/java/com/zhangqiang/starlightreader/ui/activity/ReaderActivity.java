@@ -2,17 +2,14 @@ package com.zhangqiang.starlightreader.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +29,6 @@ import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 import com.zhangqiang.instancerestore.annotations.Instance;
 import com.zhangqiang.slreader.PageView;
-import com.zhangqiang.starlightreader.ui.adapter.CoverAdapter;
 import com.zhangqiang.slreader.parser.Book;
 import com.zhangqiang.slreader.parser.impl.txt.Chapter;
 import com.zhangqiang.slreader.parser.impl.txt.TxtBook;
@@ -41,17 +37,28 @@ import com.zhangqiang.slreader.view.CoverLayout;
 import com.zhangqiang.starlightreader.R;
 import com.zhangqiang.starlightreader.base.ui.BaseActivity;
 import com.zhangqiang.starlightreader.extend.BaseObserver;
+import com.zhangqiang.starlightreader.helper.BatteryHelper;
 import com.zhangqiang.starlightreader.model.BookModel;
 import com.zhangqiang.starlightreader.model.ReadRecordModel;
 import com.zhangqiang.starlightreader.model.ReadSettingsModel;
+import com.zhangqiang.starlightreader.ui.adapter.CoverAdapter;
 import com.zhangqiang.starlightreader.ui.dialog.ReadSettingsDialog;
+import com.zhangqiang.starlightreader.ui.theme.PageTheme;
+import com.zhangqiang.starlightreader.ui.theme.Theme1;
+import com.zhangqiang.starlightreader.ui.theme.Theme2;
+import com.zhangqiang.starlightreader.ui.theme.Theme3;
+import com.zhangqiang.starlightreader.ui.theme.Theme4;
+import com.zhangqiang.starlightreader.ui.theme.ThemeNight;
 import com.zhangqiang.starlightreader.ui.widget.WindowBottomPlaceholderView;
+import com.zhangqiang.starlightreader.utils.ColorUtils;
 import com.zhangqiang.starlightreader.utils.RxJavaUtils;
 import com.zhangqiang.starlightreader.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import io.reactivex.annotations.NonNull;
 
 public class ReaderActivity extends BaseActivity {
 
@@ -77,7 +84,15 @@ public class ReaderActivity extends BaseActivity {
     private View mBtBack;
     private WindowBottomPlaceholderView mNavigationBarPlaceholderView;
     private TextView mTvMenuTitle;
+    private View eyeProtectionView;
+    private BatteryHelper mBatteryHelper;
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mBatteryHelper = new BatteryHelper(this);
+        mBatteryHelper.setOnBatteryLevelChangedListener(onBatteryLevelChangedListener);
+    }
 
     @Override
     public int getLayoutResId() {
@@ -153,8 +168,10 @@ public class ReaderActivity extends BaseActivity {
         chapterRV.setAdapter(mChapterAdapter);
         tvChapterListLabel.setPadding(0, ViewUtils.getStatusBarHeight(this), 0, 0);
 
+        eyeProtectionView = findViewById(R.id.eye_protection_cover);
         mCoverLayout = findViewById(R.id.cover_layout);
         initCoverLayout();
+
     }
 
 
@@ -165,7 +182,7 @@ public class ReaderActivity extends BaseActivity {
             if (isInMenuMode()) {
                 enterMenuMode();
             } else {
-                exitMenuMode(false,false);
+                exitMenuMode(false, false);
             }
         }
     }
@@ -173,13 +190,14 @@ public class ReaderActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        registerBatterChangeReceiver();
+        mBatteryHelper.registerBatterChangeReceiver();
     }
+
 
     @Override
     protected void onStop() {
         super.onStop();
-        unRegisterBatteryChangeReceiver();
+        mBatteryHelper.unRegisterBatteryChangeReceiver();
     }
 
     private void initMenuView() {
@@ -187,7 +205,7 @@ public class ReaderActivity extends BaseActivity {
         mMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exitMenuMode(true,false);
+                exitMenuMode(true, false);
             }
         });
         mTopMenuView.setPadding(mTopMenuView.getPaddingLeft(),
@@ -200,9 +218,9 @@ public class ReaderActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (view == mBtOptions) {
-                    exitMenuMode(true,true);
+                    exitMenuMode(true, true);
                     ReadSettingsDialog readSettingsDialog = ReadSettingsDialog.newInstance();
-                    readSettingsDialog.show(getSupportFragmentManager(),"dialog_read_settings");
+                    readSettingsDialog.show(getSupportFragmentManager(), "dialog_read_settings");
                 } else if (view == mBtCatalog) {
                     mDrawerLayout.openDrawer(Gravity.START);
                 } else if (view == mBtBrightness) {
@@ -218,47 +236,6 @@ public class ReaderActivity extends BaseActivity {
         mBtBack.setOnClickListener(onClickListener);
     }
 
-    private void registerBatterChangeReceiver() {
-
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(mBatterChangeReceiver, intentFilter);
-    }
-
-    private void unRegisterBatteryChangeReceiver() {
-        unregisterReceiver(mBatterChangeReceiver);
-    }
-
-    private final BroadcastReceiver mBatterChangeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (mAdapter != null) {
-                mAdapter.setBottomBarBattery(getBatteryLevelFromIntent(intent));
-            }
-        }
-    };
-
-    private float getBatteryLevelFromIntent(Intent intent) {
-        float current = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-        int count = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
-        return current / count;
-    }
-
-    private float getBatteryLevel() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
-            return (float) batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) / 100;
-        } else {
-            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-            Intent intent = registerReceiver(null, intentFilter);
-            if (intent == null) {
-                return 0;
-            }
-            return getBatteryLevelFromIntent(intent);
-        }
-    }
-
     private void loadBook(String charset) {
         mBook = null;
         BookModel.parseBook(bookPath, charset).compose(RxJavaUtils.applyIOMainSchedules())
@@ -266,7 +243,7 @@ public class ReaderActivity extends BaseActivity {
                 .subscribe(new BaseObserver<Book>() {
 
                     @Override
-                    public void onNext(@NonNull Book book) {
+                    protected boolean handNext(@NonNull Book book) {
                         mBook = book;
 
                         if (book instanceof TxtBook) {
@@ -278,11 +255,7 @@ public class ReaderActivity extends BaseActivity {
 
                         TextWordPosition readPosition = ReadRecordModel.getReadPosition(bookPath);
                         setupBook(book, readPosition);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
+                        return false;
                     }
                 });
     }
@@ -318,7 +291,7 @@ public class ReaderActivity extends BaseActivity {
                 return ReadRecordModel.getReadPosition(bookPath);
             }
         });
-        mAdapter.setTextColor(ReadSettingsModel.getInstance(ReaderActivity.this).getTxtColor());
+        updatePageTheme();
         mAdapter.setTextSize(ReadSettingsModel.getInstance(ReaderActivity.this).getTxtSize());
         mAdapter.setTextSimple(ReadSettingsModel.getInstance(ReaderActivity.this).isTxtSimple());
 
@@ -332,7 +305,7 @@ public class ReaderActivity extends BaseActivity {
         mAdapter.setBottomBarTextColor(0xff666666);
         mAdapter.setBottomBarTextSize(15);
         mAdapter.setBottomBarDatePaddingLeft(ViewUtils.dpToPx(this, 5));
-        mAdapter.setBottomBarBattery(getBatteryLevel());
+        mAdapter.setBottomBarBattery(mBatteryHelper.getBatteryLevel());
         mAdapter.setBottomBarBatteryColor(0xff666666);
         mAdapter.setBottomBarBatteryBodyBorderWidth(ViewUtils.dpToPx(this, 2));
         mAdapter.setBottomBarBatteryHeaderWidth(ViewUtils.dpToPx(this, 2));
@@ -342,62 +315,140 @@ public class ReaderActivity extends BaseActivity {
         mCoverLayout.setAdapter(mAdapter);
     }
 
+    private void updatePageTheme() {
+        if (mAdapter == null) {
+            return;
+        }
+        boolean nightMode = ReadSettingsModel.getInstance(ReaderActivity.this).getNightModeOption().get();
+        String pageThemeId;
+        if (nightMode) {
+            pageThemeId = ThemeNight.ID;
+        } else {
+            pageThemeId = ReadSettingsModel.getInstance(ReaderActivity.this).getPageThemeId();
+        }
+        mAdapter.setPageTheme(makePageThemeById(pageThemeId));
+    }
+
+    private PageTheme makePageThemeById(String pageThemeId) {
+        PageTheme pageTheme;
+        if (Theme1.ID.equals(pageThemeId)) {
+            pageTheme = new Theme1();
+        } else if (Theme2.ID.equals(pageThemeId)) {
+            pageTheme = new Theme2();
+        } else if (Theme3.ID.equals(pageThemeId)) {
+            pageTheme = new Theme3();
+        } else if (Theme4.ID.equals(pageThemeId)) {
+            pageTheme = new Theme4();
+        } else if (ThemeNight.ID.equals(pageThemeId)) {
+            pageTheme = new ThemeNight();
+        } else {
+            pageTheme = new Theme1();
+        }
+        return pageTheme;
+    }
+
     private void initSettings() {
 
         ReadSettingsModel.getInstance(ReaderActivity.this).getTxtCharsetOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<String>() {
+
                     @Override
-                    public void onNext(String s) {
+                    protected boolean handNext(@NonNull String s) {
                         loadBook(s);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
+                        return false;
                     }
                 });
-        ReadSettingsModel.getInstance(ReaderActivity.this).getTxtColorOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
-                .subscribe(new BaseObserver<Integer>() {
-                    @Override
-                    public void onNext(Integer integer) {
-                        if (mAdapter != null) {
-                            mAdapter.setTextColor(integer);
-                        }
-                    }
+        ReadSettingsModel.getInstance(ReaderActivity.this).getPageThemeOptionId().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+                .subscribe(new BaseObserver<String>() {
 
                     @Override
-                    public void onError(Throwable e) {
-
+                    protected boolean handNext(@NonNull String s) {
+                        updatePageTheme();
+                        return false;
                     }
+
                 });
         ReadSettingsModel.getInstance(ReaderActivity.this).getTxtSizeOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<Float>() {
+
                     @Override
-                    public void onNext(Float aFloat) {
+                    protected boolean handNext(@NonNull Float aFloat) {
                         if (mAdapter != null) {
                             mAdapter.setTextSize(aFloat);
                         }
+                        return false;
                     }
 
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
                 });
         ReadSettingsModel.getInstance(ReaderActivity.this).getTxtSimpleOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<Boolean>() {
+
                     @Override
-                    public void onNext(@NonNull Boolean aBoolean) {
+                    protected boolean handNext(@NonNull Boolean aBoolean) {
                         if (mAdapter != null) {
                             mAdapter.setTextSimple(aBoolean);
                         }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
+                        return false;
                     }
                 });
+        ReadSettingsModel.getInstance(ReaderActivity.this).getLightnessFollowSystemOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+                .subscribe(new BaseObserver<Boolean>() {
+
+                    @Override
+                    protected boolean handNext(@NonNull Boolean aBoolean) {
+                        updateBrightness();
+                        return false;
+                    }
+
+                });
+        ReadSettingsModel.getInstance(ReaderActivity.this).getLightnessValueOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+                .subscribe(new BaseObserver<Float>() {
+
+                    @Override
+                    protected boolean handNext(@NonNull Float aFloat) {
+                        updateBrightness();
+                        return false;
+                    }
+
+                });
+        ReadSettingsModel.getInstance(ReaderActivity.this).getEyeProtectOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+                .subscribe(new BaseObserver<Boolean>() {
+
+                    @Override
+                    protected boolean handNext(@NonNull Boolean aBoolean) {
+                        ViewCompat.setBackground(eyeProtectionView, aBoolean ? new ColorDrawable(ColorUtils.getEyeProtectionColor(30)) : null);
+                        return false;
+                    }
+                });
+        ReadSettingsModel.getInstance(ReaderActivity.this).getNightModeOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
+                .subscribe(new BaseObserver<Boolean>() {
+
+                    @Override
+                    protected boolean handNext(@NonNull Boolean aBoolean) {
+                        updateBrightness();
+                        updatePageTheme();
+                        return false;
+                    }
+                });
+    }
+
+    private void updateBrightness() {
+        boolean lightnessFollowSystem = ReadSettingsModel.getInstance(ReaderActivity.this).getLightnessFollowSystemOption().get();
+
+        float lightness;
+        if (lightnessFollowSystem) {
+            lightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        } else {
+            boolean nightMode = ReadSettingsModel.getInstance(ReaderActivity.this).getNightModeOption().get();
+            float factor = nightMode ? 0.5f : 1f;
+            float lightnessValue = ReadSettingsModel.getInstance(ReaderActivity.this).getLightnessValueOption().get();
+            lightness = lightnessValue * factor;
+            lightness = Math.max(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF, Math.min(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL, lightness));
+        }
+        Window window = getWindow();
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.screenBrightness = lightness;
+        window.setAttributes(attributes);
     }
 
     @Override
@@ -479,7 +530,7 @@ public class ReaderActivity extends BaseActivity {
         });
     }
 
-    private void exitMenuMode(boolean animated,boolean keepNavigationBar) {
+    private void exitMenuMode(boolean animated, boolean keepNavigationBar) {
         mInMenuMode = false;
         ViewUtils.safePost(mMenuView, new Runnable() {
             @Override
@@ -560,8 +611,16 @@ public class ReaderActivity extends BaseActivity {
         }
     }
 
-
     private boolean isInMenuMode() {
         return mInMenuMode;
     }
+
+    private final BatteryHelper.OnBatteryLevelChangedListener onBatteryLevelChangedListener = new BatteryHelper.OnBatteryLevelChangedListener() {
+        @Override
+        public void onBatteryLevelChanged(float level) {
+            if (mAdapter != null) {
+                mAdapter.setBottomBarBattery(level);
+            }
+        }
+    };
 }

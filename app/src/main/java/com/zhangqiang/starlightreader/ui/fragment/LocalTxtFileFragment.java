@@ -23,6 +23,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
+
 public class LocalTxtFileFragment extends BaseFragment {
 
     private CellRVAdapter mAdapter;
@@ -44,8 +46,9 @@ public class LocalTxtFileFragment extends BaseFragment {
                 .compose(RxJavaUtils.applyIOMainSchedules())
                 .compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<List<BookFileBean>>() {
+
                     @Override
-                    public void onNext(List<BookFileBean> txtFileBeans) {
+                    protected boolean handNext(@NonNull List<BookFileBean> txtFileBeans) {
                         ArrayList<Cell> dataList = new ArrayList<>();
                         for (int i = 0; i < txtFileBeans.size(); i++) {
                             BookFileBean txtFileBean = txtFileBeans.get(i);
@@ -66,11 +69,7 @@ public class LocalTxtFileFragment extends BaseFragment {
                             }));
                         }
                         mAdapter.setDataList(dataList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
+                        return false;
                     }
                 });
     }

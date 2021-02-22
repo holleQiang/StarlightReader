@@ -7,6 +7,8 @@ import com.zhangqiang.options.Option;
 import com.zhangqiang.options.Options;
 import com.zhangqiang.options.store.ValueStore;
 import com.zhangqiang.options.store.shared.SharedValueStore;
+import com.zhangqiang.starlightreader.ui.theme.Theme1;
+import com.zhangqiang.starlightreader.ui.theme.ThemeNight;
 
 public class ReadSettingsModel {
 
@@ -16,18 +18,26 @@ public class ReadSettingsModel {
     public static final String[] supportCharsets = new String[]{CHARSET_UTF_8, CHARSET_GBK, CHARSET_ISO_8859_1};
     private static final int MIN_FONT_SIZE_SP = 15;
     private static final int MAX_FONT_SIZE_SP = 35;
+    private static volatile ReadSettingsModel instance;
     private final Option<Float> mTxtSizeOption;
     private final Option<String> mTxtCharsetOption;
-    private final Option<Integer> mTxtColorOption;
     private final Option<Boolean> mTxtSimpleOption;
-    private static volatile ReadSettingsModel instance;
+    private final Option<String> mPageThemeIdOption;
+    private final Option<Boolean> mEyeProtectOption;
+    private final Option<Boolean> mNightModeOption;
+    private final Option<Float> mLightnessValueOption;
+    private final Option<Boolean> mLightnessFollowSystemOption;
 
     private ReadSettingsModel(Context context) {
         ValueStore valueStore = new SharedValueStore(context, "reader_config");
         mTxtSizeOption = Options.ofFloat("reader_font_size", 20f, valueStore);
         mTxtCharsetOption = Options.ofString("reader_charset", supportCharsets[0], valueStore);
-        mTxtColorOption = Options.ofInt("reader_txt_color", Color.parseColor("#333333"), valueStore);
         mTxtSimpleOption = Options.ofBoolean("reader_txt_simple", true, valueStore);
+        mPageThemeIdOption = Options.ofString("reader_page_theme_id", Theme1.ID, valueStore);
+        mEyeProtectOption = Options.ofBoolean("reader_eye_protect", false, valueStore);
+        mNightModeOption = Options.ofBoolean("reader_night_mode", false, valueStore);
+        mLightnessValueOption = Options.ofFloat("reader_lightness_value", 0.5f, valueStore);
+        mLightnessFollowSystemOption = Options.ofBoolean("reader_lightness_follow_system", true, valueStore);
     }
 
     public static ReadSettingsModel getInstance(Context context) {
@@ -70,31 +80,47 @@ public class ReadSettingsModel {
         mTxtCharsetOption.set(charset);
     }
 
-    public int getTxtColor() {
-        return mTxtColorOption.get();
-    }
-
-    public void setTxtColor(int color) {
-        mTxtColorOption.set(color);
-    }
-
     public Option<String> getTxtCharsetOption() {
         return mTxtCharsetOption;
-    }
-
-    public Option<Integer> getTxtColorOption() {
-        return mTxtColorOption;
     }
 
     public Option<Boolean> getTxtSimpleOption() {
         return mTxtSimpleOption;
     }
 
-    public boolean isTxtSimple(){
+    public boolean isTxtSimple() {
         return mTxtSimpleOption.get();
     }
 
-    public void setTxtSimple(boolean simple){
+    public void setTxtSimple(boolean simple) {
         mTxtSimpleOption.set(simple);
+    }
+
+    public Option<String> getPageThemeOptionId() {
+        return mPageThemeIdOption;
+    }
+
+    public void setPageThemeId(String id) {
+        mPageThemeIdOption.set(id);
+    }
+
+    public String getPageThemeId() {
+        return mPageThemeIdOption.get();
+    }
+
+    public Option<Boolean> getEyeProtectOption() {
+        return mEyeProtectOption;
+    }
+
+    public Option<Boolean> getNightModeOption() {
+        return mNightModeOption;
+    }
+
+    public Option<Float> getLightnessValueOption() {
+        return mLightnessValueOption;
+    }
+
+    public Option<Boolean> getLightnessFollowSystemOption() {
+        return mLightnessFollowSystemOption;
     }
 }

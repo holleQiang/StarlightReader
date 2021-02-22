@@ -46,4 +46,16 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">#fff</item>
     </style>
+
+    <style name="LightnessSeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/lightness_progress</item>
+        <item name="android:thumb">@drawable/lightness_progress_thumb</item>
+    </style>
+
+    <style name="ReaderSettingDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>

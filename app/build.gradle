@@ -37,7 +37,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.github.holleQiang:VisibleHelper:1.0.5'
     implementation 'com.github.holleQiang:CellAdapter:1.1.5'
-    implementation 'com.github.holleQiang:Options:1.0.9'
+    implementation 'com.github.holleQiang:Options:1.1.0'
     implementation 'com.github.holleQiang:HolderFragment:1.0.0'
     implementation 'com.github.holleQiang:InstanceRestore:1.0.3'
     implementation 'com.github.holleQiang:FastORM:1.0.1'

@@ -17,6 +17,8 @@ import com.zhangqiang.starlightreader.model.ReadSettingsModel;
 import com.zhangqiang.starlightreader.ui.activity.ReaderActivity;
 import com.zhangqiang.starlightreader.utils.RxJavaUtils;
 
+import io.reactivex.annotations.NonNull;
+
 public class ChooseCharsetDialog extends BaseDialogFragment {
 
     private CellRVAdapter mAdapter;
@@ -43,14 +45,11 @@ public class ChooseCharsetDialog extends BaseDialogFragment {
 
         ReadSettingsModel.getInstance(getContext()).getTxtCharsetOption().toObservable().compose(RxJavaUtils.bindLifecycle(this))
                 .subscribe(new BaseObserver<String>() {
+
                     @Override
-                    public void onNext(String s) {
+                    protected boolean handNext(@NonNull String s) {
                         mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
+                        return false;
                     }
                 });
     }

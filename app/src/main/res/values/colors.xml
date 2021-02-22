@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="windowBackground">#ffffffff</color>
     <color name="bg_reader_menu_cover">#ee000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

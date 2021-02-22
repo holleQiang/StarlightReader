@@ -1,8 +1,6 @@
 package com.zhangqiang.starlightreader.ui.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +15,8 @@ import com.zhangqiang.slreader.view.BatteryView;
 import com.zhangqiang.slreader.view.BottomBarView;
 import com.zhangqiang.slreader.view.CoverLayout;
 import com.zhangqiang.slreader.view.TopBarView;
+import com.zhangqiang.starlightreader.ui.theme.PageTheme;
+import com.zhangqiang.starlightreader.ui.theme.Theme1;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,7 +28,6 @@ public class CoverAdapter extends CoverLayout.Adapter {
     private PageView.RecycleBin recycleBin = new PageView.RecycleBin();
     private PositionFactory mPositionFactory;
     private float mTextSize = 25;
-    private int mTextColor;
     private int mContentPaddingLeft, mContentPaddingTop, mContentPaddingRight, mContentPaddingBottom;
     private int mTopBarPaddingLeft, mTopBarPaddingTop, mTopBarPaddingRight, mTopBarPaddingBottom;
     private int mBottomBarPaddingLeft, mBottomBarPaddingTop, mBottomBarPaddingRight, mBottomBarPaddingBottom;
@@ -48,7 +47,7 @@ public class CoverAdapter extends CoverLayout.Adapter {
     private int mBottomBarBatteryBodyHeight;
     private int mBottomBarBatteryBodyBorderWidth;
     private boolean mTextSimple;
-    private Drawable mPageBackground = new ColorDrawable(0xffffffff);
+    private PageTheme mPageTheme = new Theme1();
 
     public CoverAdapter(Book book, PositionFactory factory) {
         this.book = book;
@@ -146,7 +145,7 @@ public class CoverAdapter extends CoverLayout.Adapter {
         bottomBar.getProgressView().setText(paragraphIndex + "/" + paragraphCount);
 
         view = contentView;
-        ViewCompat.setBackground(view,mPageBackground);
+        ViewCompat.setBackground(view,mPageTheme.getBackground());
         return view;
     }
 
@@ -158,18 +157,11 @@ public class CoverAdapter extends CoverLayout.Adapter {
         }
     }
 
-    public void setTextColor(int textColor) {
-        if (mTextColor != textColor) {
-            this.mTextColor = textColor;
-            notifyDataChanged();
-        }
-    }
-
     private PageViewAdapter makePageViewAdapter() {
 
         DefaultPageViewAdapter adapter = new DefaultPageViewAdapter();
         adapter.setTextSize(mTextSize);
-        adapter.setTextColor(mTextColor);
+        adapter.setTextColor(mPageTheme.getTxtColor());
         adapter.setLineHeightMultiple(mLineHeightMultiple);
         adapter.setTextSimple(mTextSimple);
         return adapter;
@@ -334,9 +326,9 @@ public class CoverAdapter extends CoverLayout.Adapter {
         }
     }
 
-    public void setPageBackground(Drawable pageBackground) {
-        if (this.mPageBackground != pageBackground) {
-            this.mPageBackground = pageBackground;
+    public void setPageTheme(PageTheme pageTheme) {
+        if(this.mPageTheme != pageTheme){
+            this.mPageTheme = pageTheme;
             notifyDataChanged();
         }
     }
