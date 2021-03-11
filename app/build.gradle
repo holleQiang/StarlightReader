@@ -42,6 +42,7 @@ dependencies {
     implementation 'com.github.holleQiang:InstanceRestore:1.0.3'
     implementation 'com.github.holleQiang:FastORM:1.0.1'
     implementation 'com.github.holleQiang:PermissionRequestHelper:1.0.0'
+    implementation 'com.github.holleQiang:DownloadManager:1.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
     annotationProcessor 'com.github.holleQiang.InstanceRestore:instance-restore-compiler:1.0.3'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
